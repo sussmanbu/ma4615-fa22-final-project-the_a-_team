@@ -19,6 +19,11 @@ I'm a senior student from College of Arts and Science. I major in Economics and 
 
 Jiazhe is a senior student in Econ/Stats and is from the College of Arts and Science.
 
+## Qin Pu
+
+I'm a senior major in Economics and Mathematics and minor in biology from the College of Arts and Science.
+(https://github.com/puq99)
+
 <!-- Please leave in the information below -->
 
 ### Info About this Template.

@@ -15,7 +15,9 @@ The members of this team are below.
 
 I'm a senior student from College of Arts and Science. I major in Economics and minor in Statistics. 
 
+## Jiazhe Sun
 
+Jiazhe is a senior student in Econ/Stats and is from the College of Arts and Science.
 
 <!-- Please leave in the information below -->
 

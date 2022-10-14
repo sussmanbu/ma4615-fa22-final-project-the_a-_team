@@ -8,16 +8,14 @@ draft: false
 
 This comes from the file `content/about.md`.
 
-This is a website for the final project for MA[46]15 Data Science with R by Team TEAMNAME.
+This is a website for the final project for MA[46]15 Data Science with R by Team the A+ team.
 The members of this team are below.
 
-## Luis Iberico
+## Xinyi Pan
 
-Luis is a Ph.D. student in Stats and is the Teaching Fellow for the course.
+I'm a senior student from College of Arts and Science. I major in Economics and minor in Statistics. 
 
-## Dan Sussman
 
-Dan is a professor in the Math/Stat department and is the instructor for the course.
 
 <!-- Please leave in the information below -->
 

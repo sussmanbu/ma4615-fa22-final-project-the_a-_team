@@ -18,6 +18,7 @@ I'm a senior student from College of Arts and Science. I major in Economics and 
 ## Jiazhe Sun
 
 Jiazhe is a senior student in Econ/Stats and is from the College of Arts and Science.
+(https://github.com/JiazheSun)
 
 ## Qin Pu
 

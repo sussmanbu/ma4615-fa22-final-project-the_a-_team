@@ -1,0 +1,22 @@
+---
+title: blogpost2
+author: The_A+_team
+date: '2022-10-19'
+slug: []
+categories: []
+tags: []
+description: ~
+toc: yes
+authors: []
+series: []
+lastmod: '2022-10-19T14:13:57-04:00'
+featuredVideo: ~
+featuredImage: ~
+---
+
+
+install.packages("dplyr")
+library(tidyverse)
+AIRTRANS_CO2 %>% filter(LOCATION == "USA")
+AIRTRANS_CO2 %>% filter(LOCATION == "USA") %>% group_by(TIME) 
+

@@ -14,9 +14,18 @@ featuredVideo: ~
 featuredImage: ~
 ---
 
+install.package("dplyr")
+library(tidyverse)
+electricity %>% select(-(2:46),-(52:54))
 
 install.packages("dplyr")
 library(tidyverse)
-AIRTRANS_CO2 %>% filter(LOCATION == "USA")
-AIRTRANS_CO2 %>% filter(LOCATION == "USA") %>% group_by(TIME) 
+install.packages("lubridate")
+library("lubridate")
+AIRTRANS_CO2 %>% filter(LOCATION == "USA") 
+air1
+air1 %>% arrange(order(Time)) %>% select(-POLLUTANT, -MEASURE, -FLIGHT, -FREQUENCY, -SOURCE, -SEASONALITY, -TIME) %>% filter(Time > 2014 & Time < 2020)
+
+
+
 

@@ -18,7 +18,8 @@ install.packages("dplyr")
 
 ```{r electricity}
 library(tidyverse)
-electricity <- read_csv("electricity.csv", show_col_types = FALSE)
+electricity <- read_csv("electricity.csv")
+spec(electricity)
 electricity1 <- electricity %>% select(-(2:46),-(52:54))
 electricity2 <- electricity1[-c(1,55:57),] %>% 
   rename (electricity_emission_by_state = `Electricity Emissions by State (1970 - 2020)`)

@@ -182,8 +182,14 @@ yes
 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>electricity &lt;- read_csv(&quot;electricity.csv&quot;, show_col_types = FALSE)</code></pre>
+<pre class="r"><code>electricity &lt;- read_csv(&quot;electricity.csv&quot;)</code></pre>
 <pre><code>## New names:
+## Rows: 57 Columns: 54
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (3): Electricity Emissions by State (1970 - 2020), Change from 1970 - 20...
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## • `` -&gt; `...2`
 ## • `` -&gt; `...3`
 ## • `` -&gt; `...4`
@@ -236,6 +242,63 @@ yes
 ## • `` -&gt; `...51`
 ## • `` -&gt; `...52`
 ## • `` -&gt; `...54`</code></pre>
+<pre class="r"><code>spec(electricity)</code></pre>
+<pre><code>## cols(
+##   `Electricity Emissions by State (1970 - 2020)` = col_character(),
+##   ...2 = col_number(),
+##   ...3 = col_number(),
+##   ...4 = col_number(),
+##   ...5 = col_number(),
+##   ...6 = col_number(),
+##   ...7 = col_number(),
+##   ...8 = col_number(),
+##   ...9 = col_number(),
+##   ...10 = col_number(),
+##   ...11 = col_number(),
+##   ...12 = col_number(),
+##   ...13 = col_number(),
+##   ...14 = col_number(),
+##   ...15 = col_number(),
+##   ...16 = col_number(),
+##   ...17 = col_number(),
+##   ...18 = col_number(),
+##   ...19 = col_number(),
+##   ...20 = col_number(),
+##   ...21 = col_number(),
+##   ...22 = col_number(),
+##   ...23 = col_number(),
+##   ...24 = col_number(),
+##   ...25 = col_number(),
+##   ...26 = col_number(),
+##   ...27 = col_number(),
+##   ...28 = col_number(),
+##   ...29 = col_number(),
+##   ...30 = col_number(),
+##   ...31 = col_number(),
+##   ...32 = col_number(),
+##   ...33 = col_number(),
+##   ...34 = col_number(),
+##   ...35 = col_number(),
+##   ...36 = col_number(),
+##   ...37 = col_number(),
+##   ...38 = col_number(),
+##   ...39 = col_number(),
+##   ...40 = col_number(),
+##   ...41 = col_number(),
+##   ...42 = col_number(),
+##   ...43 = col_number(),
+##   ...44 = col_number(),
+##   ...45 = col_number(),
+##   ...46 = col_number(),
+##   ...47 = col_number(),
+##   ...48 = col_number(),
+##   ...49 = col_number(),
+##   ...50 = col_number(),
+##   ...51 = col_number(),
+##   ...52 = col_number(),
+##   `Change from 1970 - 2020` = col_character(),
+##   ...54 = col_character()
+## )</code></pre>
 <pre class="r"><code>electricity1 &lt;- electricity %&gt;% select(-(2:46),-(52:54))
 electricity2 &lt;- electricity1[-c(1,55:57),] %&gt;% 
   rename (electricity_emission_by_state = `Electricity Emissions by State (1970 - 2020)`)

@@ -14,18 +14,36 @@ featuredVideo: ~
 featuredImage: ~
 ---
 
-install.package("dplyr")
+install.packages("dplyr")
+
+```{r electricity}
 library(tidyverse)
-electricity %>% select(-(2:46),-(52:54))
+electricity <- read_csv("electricity.csv", show_col_types = FALSE)
+electricity1 <- electricity %>% select(-(2:46),-(52:54))
+electricity2 <- electricity1[-c(1,55:57),] %>% 
+  rename (electricity_emission_by_state = `Electricity Emissions by State (1970 - 2020)`)
+electricity2
+```
+
+After our group discussion, we decide to focus on the topic of  the carbon dioxide (CO2) emission by electricity, transportation and agriculture in the United States. By evaluating the whole dataset, we think it is better to explore the relationship of CO2 emission in recent years, so we focus on data between 2015-2019. The electricty data set includes the CO2 emission of different states in the US from 1970-2020, I used `select` to clean up all the data besides 2015-2019, and rest of the data can be used for analyzation. 
 
 install.packages("dplyr")
+```{r airtrans}
+library(dplyr)
 library(tidyverse)
-install.packages("lubridate")
-library("lubridate")
-AIRTRANS_CO2 %>% filter(LOCATION == "USA") 
+air1 <- read_csv("AIRTRANS_CO2.csv", show_col_types = FALSE) %>% 
+  filter(LOCATION == "USA", values_drop_na = TRUE) %>% 
+  arrange(order(Time)) %>% 
+  select(-POLLUTANT, -MEASURE, -FLIGHT, -FREQUENCY, -SOURCE, -SEASONALITY, -TIME, -`Flag Codes`, -Flags) %>% 
+  filter(Time > 2014 & Time < 2020) %>% 
+  rename(flight_type = `Flight type`, source_of_emissions = `Source of emissions`) %>% 
+  group_by(flight_type, source_of_emissions) %>% 
+  mutate(count = n()) %>% 
+  as_tibble(air1) %>% 
+  ungroup() 
 air1
-air1 %>% arrange(order(Time)) %>% select(-POLLUTANT, -MEASURE, -FLIGHT, -FREQUENCY, -SOURCE, -SEASONALITY, -TIME) %>% filter(Time > 2014 & Time < 2020)
+```
 
-
+I am working on a large dataset because it includes data from all over the world. There are thousands of rows, but we only focus on the situation in the United States. Luckily, in the dataset that I found, there is no missing value. Only in the last two columns all of the values are NAs, so I used select() to remove both of them. Also, for every variable, two versions of data show up: one of them is abbreviated, and the other one is full name. Thus, I selected the one with the abbreviated name. As for flight type and source of emissions, since there are too many categories, I choose to group_by() both. Then, we can analyze data in more small subgroups. For example, we can analyze that in 2015, passenger flight which is domestic flights operated by a resident airline in USA. 
 
 

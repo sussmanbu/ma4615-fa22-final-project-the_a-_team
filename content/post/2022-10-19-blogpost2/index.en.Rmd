@@ -18,15 +18,29 @@ install.packages("dplyr")
 
 ```{r electricity}
 library(tidyverse)
-electricity <- read_csv("electricity.csv", show_col_types = FALSE)
-spec(electricity)
-electricity1 <- electricity %>% select(-(2:46),-(52:54))
-electricity2 <- electricity1[-c(1,55:57),] %>% 
-  rename (electricity_emission_by_state = `Electricity Emissions by State (1970 - 2020)`)
-electricity2
+electricity <- read_csv("electricity_co2.csv", 
+                        col_types = cols_only(State = col_character(),
+                                              Pollutant = col_character(),
+                                              Measure = col_character(),
+                                              Time = col_double(),
+                                              Value = col_double()))
+problems(electricity)
+electricity1 <- electricity %>% 
+  select(-Pollutant, -Measure) %>% 
+  filter(Time > 2014 & Time < 2020)
+electricity1
 ```
 
 After our group discussion, we decide to focus on the topic of  the carbon dioxide (CO2) emission by electricity, transportation and agriculture in the United States. By evaluating the whole dataset, we think it is better to explore the relationship of CO2 emission in recent years, so we focus on data between 2015-2019. The electricty data set includes the CO2 emission of different states in the US from 1970-2020, I used `select` to clean up all the data besides 2015-2019, and rest of the data can be used for analyzation. 
+
+
+```{r plot1 - electricity}
+electricity1 %>% filter(State=="Pennsylvania"|State=="Ohio"|State=="Illinois"|State=="Texas"|State=="Tennessee") %>%
+  ggplot(aes(x = Time, y = Value)) +
+  geom_point(aes(color = State)) + facet_wrap(~ as.factor(State))
+```
+
+As we are working with a large dataset, which includes data across years from all the states in the United States, we decided to focus on the data of five states. Five states are Pennsylvania, Ohio, Illinois, Texas, and Tennessee. They are states that have prominent value of electricity emissions, which convinces us they can represent the whole trend of United States.Accordinig to the plot, we observe the electricity emission has small changes every year. It may have small fluctuations, but the overall trend is downwarding. Of the five states, Texas shows the most tremendous change. It starts from a very high value of electricity emission and shows a obvious reduction from 2018-2019. Overall, the obvious pattern we see is the electricity emission decreases at Illinois, Ohio, Pennsylvania, Tennessee, Texas from 2015-2019. This is very surprising for us because we originally thought electricity emissions must be increasing from 2015-2019. We suppose we face increasing threats of climate so that the electricity emission must gets severer every year. However, the reality stands in opposite to our assumption. Maybe the downward trend of electricity emission is caused by people's increasing attention to the climate. For example, people may take actions in recent years to cut electricity emission and protect the climate.
 
 install.packages("dplyr")
 ```{r airtrans}
@@ -43,9 +57,22 @@ air1 <- read_csv("AIRTRANS_CO2.csv", show_col_types = FALSE) %>%
   as_tibble(AIRTRANS_CO2) %>% 
   ungroup() 
 air1
+
 ```
 
 I am working on a large dataset because it includes data from all over the world. There are thousands of rows, but we only focus on the situation in the United States. Luckily, in the dataset that I found, there is no missing value. Only in the last two columns all of the values are NAs, so I used select() to remove both of them. Also, for every variable, two versions of data show up: one of them is abbreviated, and the other one is full name. Thus, I selected the one with the abbreviated name. As for flight type and source of emissions, since there are too many categories, I choose to group_by() both. Then, we can analyze data in more small subgroups. For example, we can analyze that in 2015, passenger flight which is domestic flights operated by a resident airline in USA. 
+
+```{r airtransplot}
+air1 %>%
+     group_by(Time, flight_type) %>%
+     summarise(Value = sum(Value)) %>%
+     ggplot(aes(x = Time, y = Value, fill = flight_type)) +
+     geom_col(position = "dodge") +
+     labs(title = "CO2 emission by year", x = "year", y = "CO2 Emission (tonnes)", fill = "Flight type")
+```
+
+We investigate the CO2 emission in the flight transportation sector by flight type. In the graph, we see a roughly constant rate of increase in the year from 2015 to the year 2018. However, in 2019 there is a sharp increase in freight flights, along with a slightly lower but still noticeable increase in Passenger flights. This is an interesting sign and we will look into the other two data sets to see if this is happening only for the transportation sector or if it is a common trend in the year 2019. Another factor that we noticed in the data set is that the sum of all flight types' emission of CO2 doesn't add up to the total emission in the sector. We will keep looking through the data set to see if there is some problem.
+
 
 ```{r agriculture and forest land}
 Agri <- read_csv("FAOSTAT.csv", show_col_types = FALSE) 
@@ -56,9 +83,8 @@ Agri2 <-
   select(Area, Item, Element,unit, Y2015:Y2019) %>%
   pivot_longer(c(Y2015:Y2019),
                names_to = "Year", values_to = "emission") %>%
-               mutate(total = emission * 1000) %>%
-               select(-emission) %>%
-  drop_na()
+  mutate(total = emission * 1000) %>%
+  select(-emission)
 Agri2
 ```
 
@@ -69,3 +95,20 @@ In order to make three datasets uniform, I added a new column for unit "tonnes" 
 it matches to the other two datasets. Then, I changed the values of the emission by multiplying 1000 to convert it 
 to tonnes. I selected the columns I need by select(). Because the original dataset is wide. So I change the format 
 of the dataset by using pivit_longer. So that the year becomes the rows and the whole table looks clear and concise.
+
+
+```{r agriculture and forest land plot}
+
+Agri2 %>%
+     group_by(Element, Item, Year) %>%
+     summarise(total = sum(total)) %>%
+    filter(Item == "Emissions on agricultural land" | Item == "Farm-gate emissions" | Item == "IPCC Agriculture" | Item == "AFOLU" | Item == "Enteric Fermentation") %>%
+  ggplot(aes(x = "" , y = total, fill = Item)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  facet_wrap(~as.factor(Year)) +
+  labs(title = "top 5 source of emission in Agriculture", x = "", y = "CO2 emission(tonnes)",
+       fill = "Source of emission")
+```
+
+For the agriculture sector, there are over 20 sources of emission. In the graph, we choose the top five emission sources that have over 70% of the total CO2 emission in this sector. The most prominent trend in the data is that the "AFOLU", for Agriculture, Forestry and Other Land Use, has increased drastically from 2015 to 2017, and fall slightly in 2018 and 2019. This source is also a top contributor to CO2 emission on the all-sector scale and is strongly influenced by policy setting and controls. Other than AFOLU, The other sectors are stable in the five years. In addition to the factors that we showed on the plot, the agriculture sector has an exciting factor that contributes to the environment. In the data we see the "forest land" has some large negative emission numbers, meaning that they are absorbing greenhouse gases. That could also be a direction for our future investigation.

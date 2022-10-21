@@ -75,6 +75,8 @@ We investigate the CO2 emission in the flight transportation sector by flight ty
 
 
 ```{r agriculture and forest land}
+library(dplyr)
+library(tidyverse)
 Agri <- read_csv("FAOSTAT.csv", show_col_types = FALSE) 
 Agri2 <- 
   Agri %>% filter(Area == "United States of America") %>%
@@ -87,6 +89,7 @@ Agri2 <-
   select(-emission)
 Agri2
 ```
+
 
 This FOODSTAT dataset explores the relationship between the CO2 emission and agriculture/ forest ground.
 After exploring the data, I first decided to filter out the region and time. We focus on the data of the USA

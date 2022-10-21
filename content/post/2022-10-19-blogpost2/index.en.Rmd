@@ -47,4 +47,24 @@ air1
 
 I am working on a large dataset because it includes data from all over the world. There are thousands of rows, but we only focus on the situation in the United States. Luckily, in the dataset that I found, there is no missing value. Only in the last two columns all of the values are NAs, so I used select() to remove both of them. Also, for every variable, two versions of data show up: one of them is abbreviated, and the other one is full name. Thus, I selected the one with the abbreviated name. As for flight type and source of emissions, since there are too many categories, I choose to group_by() both. Then, we can analyze data in more small subgroups. For example, we can analyze that in 2015, passenger flight which is domestic flights operated by a resident airline in USA. 
 
+```{r agriculture and forest land}
+Agri <- read_csv("FAOSTAT.csv") 
+str(Agri)
+Agri2 <- 
+  Agri %>% filter(Area == "United States of America") %>%
+  filter(str_detect(Element, "CO2eq")) %>%
+  mutate(unit = "tonnes") %>%
+  select(Area, Item, Element,unit, Y2015:Y2019) %>%
+  pivot_longer(c(Y2015:Y2019),
+               names_to = "Year", values_to = "emission") %>%
+  drop_na()
+Agri2
+```
 
+This FOODSTAT dataset explores the relationship between the CO2 emission and agriculture/ forest ground.
+After exploring the data, I first decided to filter out the region and time. We focus on the data of the USA
+from 2015 to 2019 for all three datasets. And then I filtered the emission element, which is CO2 emission.
+In order to make three datasets uniform, I added a new column for unit "tonnes" by using mutate() , so that 
+it matches to the other two datasets. Then, I changed the values of the emission by multiplying 1000 to convert it 
+to tonnes. I selected the columns I need by select(). Because the original dataset is wide. So I change the format 
+of the dataset by using pivit_longer. So that the year becomes the rows and the whole table looks clear and concise.

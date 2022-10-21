@@ -1,6 +1,6 @@
 ---
 title: blogpost1
-author: Daniel Sussman
+author: The_A+_team
 date: '2022-10-16'
 slug: []
 categories: []
@@ -15,7 +15,7 @@ featuredImage: ~
 ---
 
 1. three datasets links
-https://www.kaggle.com/datasets/amandaroseknudsen/edgarfoodemissions
+https://www.kaggle.com/datasets/ankitpranay/global-emissions-from-agriculture-and-forest-land?resource=download
 https://stats.oecd.org/Index.aspx?QueryId=105629#    
 https://www.eia.gov/environment/emissions/state/  (electricity.xlsx) dataset name: Electricity energy-related carbon dioxide emissions
 

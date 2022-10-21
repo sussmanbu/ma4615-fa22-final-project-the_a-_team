@@ -18,7 +18,7 @@ install.packages("dplyr")
 
 ```{r electricity}
 library(tidyverse)
-electricity <- read_csv("electricity.csv")
+electricity <- read_csv("electricity.csv", show_col_types = FALSE)
 spec(electricity)
 electricity1 <- electricity %>% select(-(2:46),-(52:54))
 electricity2 <- electricity1[-c(1,55:57),] %>% 
@@ -40,7 +40,7 @@ air1 <- read_csv("AIRTRANS_CO2.csv", show_col_types = FALSE) %>%
   rename(flight_type = `Flight type`, source_of_emissions = `Source of emissions`) %>% 
   group_by(flight_type, source_of_emissions) %>% 
   mutate(count = n()) %>% 
-  as_tibble(air1) %>% 
+  as_tibble(AIRTRANS_CO2) %>% 
   ungroup() 
 air1
 ```
@@ -48,8 +48,7 @@ air1
 I am working on a large dataset because it includes data from all over the world. There are thousands of rows, but we only focus on the situation in the United States. Luckily, in the dataset that I found, there is no missing value. Only in the last two columns all of the values are NAs, so I used select() to remove both of them. Also, for every variable, two versions of data show up: one of them is abbreviated, and the other one is full name. Thus, I selected the one with the abbreviated name. As for flight type and source of emissions, since there are too many categories, I choose to group_by() both. Then, we can analyze data in more small subgroups. For example, we can analyze that in 2015, passenger flight which is domestic flights operated by a resident airline in USA. 
 
 ```{r agriculture and forest land}
-Agri <- read_csv("FAOSTAT.csv") 
-str(Agri)
+Agri <- read_csv("FAOSTAT.csv", show_col_types = FALSE) 
 Agri2 <- 
   Agri %>% filter(Area == "United States of America") %>%
   filter(str_detect(Element, "CO2eq")) %>%
@@ -57,6 +56,8 @@ Agri2 <-
   select(Area, Item, Element,unit, Y2015:Y2019) %>%
   pivot_longer(c(Y2015:Y2019),
                names_to = "Year", values_to = "emission") %>%
+               mutate(total = emission * 1000) %>%
+               select(-emission) %>%
   drop_na()
 Agri2
 ```

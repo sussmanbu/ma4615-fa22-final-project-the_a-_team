@@ -44,10 +44,22 @@ air1 <- read_csv("AIRTRANS_CO2.csv", show_col_types = FALSE) %>%
   ungroup() 
 air1
 ```
-
 I am working on a large dataset because it includes data from all over the world. There are thousands of rows, but we only focus on the situation in the United States. Luckily, in the dataset that I found, there is no missing value. Only in the last two columns all of the values are NAs, so I used select() to remove both of them. Also, for every variable, two versions of data show up: one of them is abbreviated, and the other one is full name. Thus, I selected the one with the abbreviated name. As for flight type and source of emissions, since there are too many categories, I choose to group_by() both. Then, we can analyze data in more small subgroups. For example, we can analyze that in 2015, passenger flight which is domestic flights operated by a resident airline in USA. 
 
+```{r airtransplot}
+air1 %>%
+     group_by(Time, flight_type) %>%
+     summarise(Value = sum(Value)) %>%
+     ggplot(aes(x = Time, y = Value, fill = flight_type)) +
+     geom_col(position = "dodge") +
+     labs(title = "CO2 emission by year", x = "year", y = "CO2 Emission (tonnes)", fill = "Flight type")
+```
+We investigate the CO2 emission in the flight transportation sector by flight type. In the graph, we see a roughly constant rate of increase in the year from 2015 to the year 2018. However, in 2019 there is a sharp increase in freight flights, along with a slightly lower but still noticeable increase in Passenger flights. This is an interesting sign and we will look into the other two data sets to see if this is happening only for the transportation sector or if it is a common trend in the year 2019. Another factor that we noticed in the data set is that the sum of all flight types' emission of CO2 doesn't add up to the total emission in the sector. We will keep looking through the data set to see if there is some problem.
+
+
 ```{r agriculture and forest land}
+library(dplyr)
+library(tidyverse)
 Agri <- read_csv("FAOSTAT.csv", show_col_types = FALSE) 
 Agri2 <- 
   Agri %>% filter(Area == "United States of America") %>%
@@ -62,10 +74,22 @@ Agri2 <-
 Agri2
 ```
 
-This FOODSTAT dataset explores the relationship between the CO2 emission and agriculture/ forest ground.
-After exploring the data, I first decided to filter out the region and time. We focus on the data of the USA
-from 2015 to 2019 for all three datasets. And then I filtered the emission element, which is CO2 emission.
-In order to make three datasets uniform, I added a new column for unit "tonnes" by using mutate() , so that 
-it matches to the other two datasets. Then, I changed the values of the emission by multiplying 1000 to convert it 
-to tonnes. I selected the columns I need by select(). Because the original dataset is wide. So I change the format 
+This FOODSTAT dataset explores the relationship between the CO2 emission and agriculture/ forest ground.After exploring the data, I first decided to filter out the region and time. We focus on the data of the USA from 2015 to 2019 for all three datasets. And then I filtered the emission element, which is CO2 emission.
+In order to make three datasets uniform, I added a new column for unit "tonnes" by using mutate() , so that it matches to the other two datasets. Then, I changed the values of the emission by multiplying 1000 to convert it to tonnes. I selected the columns I need by select(). Because the original dataset is wide. So I change the format 
 of the dataset by using pivit_longer. So that the year becomes the rows and the whole table looks clear and concise.
+
+```{r agriculture and forest land plot}
+
+Agri2 %>%
+     group_by(Element, Item, Year) %>%
+     summarise(total = sum(total)) %>%
+    filter(Item == "Emissions on agricultural land" | Item == "Farm-gate emissions" | Item == "IPCC Agriculture" | Item == "AFOLU" | Item == "Enteric Fermentation") %>%
+  ggplot(aes(x = "" , y = total, fill = Item)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  facet_wrap(~as.factor(Year)) +
+  labs(title = "top 5 source of emission in Agriculture", x = "", y = "CO2 emission(tonnes)",
+       fill = "Source of emission")
+
+```
+For the agriculture sector, there are over 20 sources of emission. In the graph, we choose the top five emission sources that have over 70% of the total CO2 emission in this sector. The most prominent trend in the data is that the "AFOLU", for Agriculture, Forestry and Other Land Use, has increased drastically from 2015 to 2017, and fall slightly in 2018 and 2019. This source is also a top contributor to CO2 emission on the all-sector scale and is strongly influenced by policy setting and controls. Other than AFOLU, The other sectors are stable in the five years. In addition to the factors that we showed on the plot, the agriculture sector has an exciting factor that contributes to the environment. In the data we see the "forest land" has some large negative emission numbers, meaning that they are absorbing greenhouse gases. That could also be a direction for our future investigation.

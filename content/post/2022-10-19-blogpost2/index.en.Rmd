@@ -27,7 +27,7 @@ electricity <- read_csv("electricity_co2.csv",
 problems(electricity)
 electricity1 <- electricity %>% 
   select(-Pollutant, -Measure) %>% 
-  filter(Time > 2014 & Time < 2020)
+  filter(Time > 2014 & Time < 2020) %>% rename(electricity_emission = Value, year = Time)
 electricity1
 ```
 
@@ -36,10 +36,9 @@ After our group discussion, we decide to focus on the topic of  the carbon dioxi
 
 ```{r plot1 - electricity}
 electricity1 %>% filter(State=="Pennsylvania"|State=="Ohio"|State=="Illinois"|State=="Texas"|State=="Tennessee") %>%
-  ggplot(aes(x = Time, y = Value)) +
+  ggplot(aes(x = year, y = electricity_emission)) +
   geom_point(aes(color = State)) + facet_wrap(~ as.factor(State))
 ```
-![](images/Screen Shot 2022-10-21 at 11.10.15 PM.png)
 
 As we are working with a large dataset, which includes data across years from all the states in the United States, we decided to focus on the data of five states. Five states are Pennsylvania, Ohio, Illinois, Texas, and Tennessee. They are states that have prominent value of electricity emissions, which convinces us they can represent the whole trend of United States.Accordinig to the plot, we observe the electricity emission has small changes every year. It may have small fluctuations, but the overall trend is downwarding. Of the five states, Texas shows the most tremendous change. It starts from a very high value of electricity emission and shows a obvious reduction from 2018-2019. Overall, the obvious pattern we see is the electricity emission decreases at Illinois, Ohio, Pennsylvania, Tennessee, Texas from 2015-2019. This is very surprising for us because we originally thought electricity emissions must be increasing from 2015-2019. We suppose we face increasing threats of climate so that the electricity emission must gets severer every year. However, the reality stands in opposite to our assumption. Maybe the downward trend of electricity emission is caused by people's increasing attention to the climate. For example, people may take actions in recent years to cut electricity emission and protect the climate.
 
@@ -63,7 +62,7 @@ air1
 
 I am working on a large dataset because it includes data from all over the world. There are thousands of rows, but we only focus on the situation in the United States. Luckily, in the dataset that I found, there is no missing value. Only in the last two columns all of the values are NAs, so I used select() to remove both of them. Also, for every variable, two versions of data show up: one of them is abbreviated, and the other one is full name. Thus, I selected the one with the abbreviated name. As for flight type and source of emissions, since there are too many categories, I choose to group_by() both. Then, we can analyze data in more small subgroups. For example, we can analyze that in 2015, passenger flight which is domestic flights operated by a resident airline in USA. 
 
-```{r airtransplot}
+```{r plot2 - airtransplot}
 air1 %>%
      group_by(Time, flight_type) %>%
      summarise(Value = sum(Value)) %>%
@@ -71,7 +70,6 @@ air1 %>%
      geom_col(position = "dodge") +
      labs(title = "CO2 emission by year", x = "year", y = "CO2 Emission (tonnes)", fill = "Flight type")
 ```
-![](images/Screen Shot 2022-10-21 at 11.10.26 PM.png)
 
 We investigate the CO2 emission in the flight transportation sector by flight type. In the graph, we see a roughly constant rate of increase in the year from 2015 to the year 2018. However, in 2019 there is a sharp increase in freight flights, along with a slightly lower but still noticeable increase in Passenger flights. This is an interesting sign and we will look into the other two data sets to see if this is happening only for the transportation sector or if it is a common trend in the year 2019. Another factor that we noticed in the data set is that the sum of all flight types' emission of CO2 doesn't add up to the total emission in the sector. We will keep looking through the data set to see if there is some problem.
 
@@ -92,7 +90,6 @@ Agri2 <-
 Agri2
 ```
 
-
 This FOODSTAT dataset explores the relationship between the CO2 emission and agriculture/ forest ground.
 After exploring the data, I first decided to filter out the region and time. We focus on the data of the USA
 from 2015 to 2019 for all three datasets. And then I filtered the emission element, which is CO2 emission.
@@ -102,7 +99,7 @@ to tonnes. I selected the columns I need by select(). Because the original datas
 of the dataset by using pivit_longer. So that the year becomes the rows and the whole table looks clear and concise.
 
 
-```{r agriculture and forest land plot}
+```{r plot3 - agriculture and forest land plot}
 
 Agri2 %>%
      group_by(Element, Item, Year) %>%
@@ -115,6 +112,5 @@ Agri2 %>%
   labs(title = "top 5 source of emission in Agriculture", x = "", y = "CO2 emission(tonnes)",
        fill = "Source of emission")
 ```
-![](images/Screen Shot 2022-10-21 at 11.10.34 PM.png)
 
 For the agriculture sector, there are over 20 sources of emission. In the graph, we choose the top five emission sources that have over 70% of the total CO2 emission in this sector. The most prominent trend in the data is that the "AFOLU", for Agriculture, Forestry and Other Land Use, has increased drastically from 2015 to 2017, and fall slightly in 2018 and 2019. This source is also a top contributor to CO2 emission on the all-sector scale and is strongly influenced by policy setting and controls. Other than AFOLU, The other sectors are stable in the five years. In addition to the factors that we showed on the plot, the agriculture sector has an exciting factor that contributes to the environment. In the data we see the "forest land" has some large negative emission numbers, meaning that they are absorbing greenhouse gases. That could also be a direction for our future investigation.

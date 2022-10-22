@@ -31,7 +31,7 @@ electricity1 <- electricity %>%
 electricity1
 ```
 
-After our group discussion, we decide to focus on the topic of  the carbon dioxide (CO2) emission by electricity, transportation and agriculture in the United States. By evaluating the whole dataset, we think it is better to explore the relationship of CO2 emission in recent years, so we focus on data between 2015-2019. The electricty data set includes the CO2 emission of different states in the US from 1970-2020, I used `select` to clean up all the data besides 2015-2019, and rest of the data can be used for analyzation. 
+After our group discussion, we decide to focus on the topic of  the carbon dioxide (CO2) emission by electricity, transportation and agriculture in the United States. By evaluating the whole dataset, we think it is better to explore the relationship of CO2 emission in recent years, so we focus on data between 2015-2019.  The electricty data set includes the CO2 emission of different states in the US from 1970-2020, and the unit of emission is million tons. I used `select` to clean up all the data besides the value of Carbon Dioxide emission, and using `filter` to only select the data from 2015-2019. Then generate a subset of the original electricity set.
 
 
 ```{r plot1 - electricity}
@@ -39,6 +39,7 @@ electricity1 %>% filter(State=="Pennsylvania"|State=="Ohio"|State=="Illinois"|St
   ggplot(aes(x = Time, y = Value)) +
   geom_point(aes(color = State)) + facet_wrap(~ as.factor(State))
 ```
+![](images/Screen Shot 2022-10-21 at 11.10.15 PM.png)
 
 As we are working with a large dataset, which includes data across years from all the states in the United States, we decided to focus on the data of five states. Five states are Pennsylvania, Ohio, Illinois, Texas, and Tennessee. They are states that have prominent value of electricity emissions, which convinces us they can represent the whole trend of United States.Accordinig to the plot, we observe the electricity emission has small changes every year. It may have small fluctuations, but the overall trend is downwarding. Of the five states, Texas shows the most tremendous change. It starts from a very high value of electricity emission and shows a obvious reduction from 2018-2019. Overall, the obvious pattern we see is the electricity emission decreases at Illinois, Ohio, Pennsylvania, Tennessee, Texas from 2015-2019. This is very surprising for us because we originally thought electricity emissions must be increasing from 2015-2019. We suppose we face increasing threats of climate so that the electricity emission must gets severer every year. However, the reality stands in opposite to our assumption. Maybe the downward trend of electricity emission is caused by people's increasing attention to the climate. For example, people may take actions in recent years to cut electricity emission and protect the climate.
 
@@ -70,6 +71,7 @@ air1 %>%
      geom_col(position = "dodge") +
      labs(title = "CO2 emission by year", x = "year", y = "CO2 Emission (tonnes)", fill = "Flight type")
 ```
+![](images/Screen Shot 2022-10-21 at 11.10.26 PM.png)
 
 We investigate the CO2 emission in the flight transportation sector by flight type. In the graph, we see a roughly constant rate of increase in the year from 2015 to the year 2018. However, in 2019 there is a sharp increase in freight flights, along with a slightly lower but still noticeable increase in Passenger flights. This is an interesting sign and we will look into the other two data sets to see if this is happening only for the transportation sector or if it is a common trend in the year 2019. Another factor that we noticed in the data set is that the sum of all flight types' emission of CO2 doesn't add up to the total emission in the sector. We will keep looking through the data set to see if there is some problem.
 
@@ -113,5 +115,6 @@ Agri2 %>%
   labs(title = "top 5 source of emission in Agriculture", x = "", y = "CO2 emission(tonnes)",
        fill = "Source of emission")
 ```
+![](images/Screen Shot 2022-10-21 at 11.10.34 PM.png)
 
 For the agriculture sector, there are over 20 sources of emission. In the graph, we choose the top five emission sources that have over 70% of the total CO2 emission in this sector. The most prominent trend in the data is that the "AFOLU", for Agriculture, Forestry and Other Land Use, has increased drastically from 2015 to 2017, and fall slightly in 2018 and 2019. This source is also a top contributor to CO2 emission on the all-sector scale and is strongly influenced by policy setting and controls. Other than AFOLU, The other sectors are stable in the five years. In addition to the factors that we showed on the plot, the agriculture sector has an exciting factor that contributes to the environment. In the data we see the "forest land" has some large negative emission numbers, meaning that they are absorbing greenhouse gases. That could also be a direction for our future investigation.

@@ -1,0 +1,46 @@
+---
+title: blogpost3
+author: The_A+_team
+date: '2022-10-27'
+slug: []
+categories: []
+tags: []
+description: ~
+toc: yes
+authors: []
+series: []
+lastmod: '2022-10-27T15:15:52-04:00'
+featuredVideo: ~
+featuredImage: ~
+---
+1. Discuss how the principles for advancing equitable data practice are relevant to your data.
+
+The principle of equitable data is very relevant to our data. The main problem we are looking at is the greenhouse gas emission in the United States, and the datasets we are using are open to the public. Our goal is to find which field is leading the carbon dioxide emission and give suggestions to protect the environment. Since the environmental problem concerns everyone in the country, the research will benefit everyone. In this way, our research will uphold all three principles in the Belmont Report, beneficence, respect for persons, and justice.
+
+In addition, because our data collection is comprehensive, our bias tends to be small regarding data selection. We choose electricity, transportation, and agriculture as they are the top carbon dioxide sources in the US. Besides, we are also thinking critically about the use of data. For example, we examine how to clean the data to avoid missing information. Overall, we have enough data equity to support our future conclusion.
+
+
+2. For two or three principles, talk about how they are relevant and what adhering to the practice would entail for your data.
+
+Beneficence:
+Our group needs to study climate, which is not a sensitive topic such as drug use and sexuality. The topics fall within the appropriate range, are of greater interest to the person or community at risk, and are not sensitive. Another point that falls within the scope of beneficence is collecting personal information such as name, Social Security Number, and date of birth. Our dataset is about aircraft information and emissions in the US, as well as emissions from different agricultural production, electricity use, and emissions by state. The electricity usage may be designed for each household, but this information will only be extracted with personal information. The last point is re-identification risk, which refers to combining our database and public data. It is possible to expose sensitive information about people inadvertently. For example, race, the combination of several databases may be able to identify groups without racial differences. However, our data involves very little personal information, so even if we combine public data, we will still not expose personal information. The information is anonymized, and only information relevant to the topic to be studied is present. For example, our data is mainly the aircraft type, destination, and emissions of different agricultural aspects.
+
+Justice：
+
+Our data is relevant because it is about people’s everyday life. In this case, we could apply the principle of justice to produce our analysis in a simple way for people and communities to understand. As a result, they would be able to make changes or take action accordingly. For example, as we are analyzing electricity usage among states, some of the states might have a much higher electricity usage per person than others. Then, we can look into the causes of such differences and analyze them from several different perspectives. During this process, those areas showing higher electricity usage could gain some information. For instance, they may find some improvement in the infrastructure or the policies that can effectively decrease energy usage. In this way, we can distribute benefits to the people from that we collect data.
+
+
+3. A particularly important principle is transparency. Talk about what might be some limitations of your analysis.
+
+There are several limitations we might face during analysis. First, our analysis may overextend the data and make points they do not support, so we should pay attention to the definitions and limits of data. Besides, We should be transparent about what the data tries to inform analysis and carefully make analytical decisions. Other than that, the limitation of our analysis may also include low quality of data, bias, tool selection, privacy concerns, lack of commitment, and patience. For example, the analysis may lack access to quality data, and we may have problems choosing the right data we need, causing some missing data for analytics purposes. Some of the data analysis tools are hard to operate and need training. Also, there may be bias within the tools. If companies use poor data sets to train the model, it will produce hidden bias in the analysis and decision-making process. To address privacy concerns, we should be cautious of what sort of data we are collecting and ensure the security and confidentiality of data, or we will face another limitation of data breaches. There is another limitation of our analysis: it may be very time-consuming. If existing data is not available, it may overturn our previous analysis and require us to restart the data collection process.
+
+
+4. Abuse or misuse of the data
+
+Normally, people may consider that data misuse is the theft of a database. However, data misuse can happen when using legitimately collected information in a way that is beyond its original purpose. 
+
+For instance, ambiguity is a type of data abuse. It appears when the organizations don’t disclose how user data is collected and what’s the intention of collecting those data. Some stakeholders may not want the data collection organizations to use and interpret the data. Even though many organizations are operated by the government, misusing the data can still violate personal privacy. In our case, the collection and investigation of personal electricity usage can jeopardize people’s privacy. The acquisition of those data should be under the permission of different stakeholders. 
+
+Besides, collection errors can also lead to the misuse of data. Inaccurate calculations or different units of measurement can result in the deviated data it never meant to gather, endangering analysts and the research process. In our case, the data collection for agriculture and flights might be challenging because it involves a complex database with large numbers and many different categories. As a result, deciding which section of the database to be analyzed is a crucial step. If the scope of the investigation is inconsistent, the final results will be inaccurate. 
+
+Last but not least, improper filing is a source of data misuse. Storing the data in an inaccessible place ensures the privacy of the dataset. The information on national electricity use, agriculture output, and flights may be used for other purposes and be revised illegally.

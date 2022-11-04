@@ -24,7 +24,7 @@ air1 <- read_csv("AIRTRANS_CO2.csv", show_col_types = FALSE) %>%
   filter(Time > 2014 & Time < 2020) %>% 
   rename(flight_type = `Flight type`, source_of_emissions = `Source of emissions`, Year = Time, Emission = Value) %>%
   ungroup() 
-air1
+
 ```
 
 
@@ -84,10 +84,13 @@ electricity1 <- electricity %>%
   filter(Time > 2014 & Time < 2020) %>%
   select(-Pollutant, -Measure) %>% 
   rename(electricity_emission = Value, year = Time)
+```
+```{r graph3}
 mod <- lm(electricity_emission ~ year, data=electricity1)
 coeff <- coef(mod)
 ggplot(electricity1, aes(year, electricity_emission)) +  geom_abline(intercept = coeff[1], slope = coeff[2], color = "red", na.rm = FALSE) + geom_point()
 ```
+
 
 
 

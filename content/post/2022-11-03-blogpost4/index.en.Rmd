@@ -28,7 +28,7 @@ air1 <- read_csv("AIRTRANS_CO2.csv", show_col_types = FALSE) %>%
 ```
 
 
-```{r graph}
+```{r EDA1}
 air1 %>% ggplot(aes(x = Year, y = Emission)) +
   geom_point(aes(color = flight_type), size = 1) +
   stat_smooth(aes(group = flight_type), color='black', alpha = 0.5, geom = "line")
@@ -61,7 +61,7 @@ Agri2
 ```
 
 
-```{r graph2}
+```{r EDA2}
 Agri2 %>%
   filter(source_of_emissions == "Emissions on agricultural land" | source_of_emissions == "Farm-gate emissions" | source_of_emissions == "IPCC Agriculture" | 
            source_of_emissions == "AFOLU" | source_of_emissions == "Enteric Fermentation") %>%
@@ -88,7 +88,7 @@ electricity1
 ```
 
 
-```{r graph3}
+```{r modeling}
 mod <- lm(electricity_emission ~ year, data=electricity1)
 coeff <- coef(mod)
 ggplot(electricity1, aes(year, electricity_emission)) +  geom_abline(intercept = coeff[1], slope = coeff[2], color = "red", na.rm = FALSE) + geom_point()

@@ -47,14 +47,6 @@ In the second graph, we are trying to explore the summarized trend of emissions 
 In the third graph, we try to extend to include the relationship between resources of emissions and emissions for a more comprehensive explanation of emission trend.  In the more detailed graph, there are 12 sources of emissions, and “(G)-international flight departing from country A, operated by an airline that is non-resident in country A” is the resource that created biggest influence, while B and F are the resources that created smallest influence.
 
 
-```{r airline modeling}
-air1 <- lm(Emission ~ Year, data = air1)
-(beta <- coef(air1))
-air1 %>% ggplot(aes(Year, Emission)) + geom_point() +  geom_abline(intercept = beta[1],
-              slope = beta[2]) + labs(y = "Emission(tonnes)" )
-```
-
-
 ```{r agriculture data cleaning}
 library(dplyr)
 library(tidyverse)
@@ -91,6 +83,11 @@ Agri2 %>%
   geom_boxplot() + coord_flip() + labs(title = "CO2 emission by sources", x = "Emissions(tonnes)", y = "source of emission")
 ```
 
+In the last blogpost, we plotted the CO2 emission for the largest sources as a pie chart to show the proportion of each factor. The emission in different year is separately plotted. For blogpost 4, we are trying to focus on the source of emission itself. Therefore, we made source or emission vs. amount of emission, and each point is representing the amount of CO2 that the source released in a specific years. In this way, the graph is easier and clear for the audience to interpret.  
+
+Furthermore, we did a box-plot for the data. As a result, we now can see a different distribution of data point for each source. This is beneficial because it provides more detail for us to examine those with unusual data point. For example, we saw that the AFOLU and Agriculture land has some extreme outliers in some of the years. We could then trace back to the original data and possibly find a cause to that. 
+
+Additionally, we could cross datasets to see if that is a common trend for other sectors. If these trends are commonly shared, it is possible that there is some variable that can be used in modeling and thus predict the CO2 emission for future. For instance, we could construct a model that shows if we know that one sector has a higher emission this year, some of the other source might also have an increased emission by some percentage
 
 ```{r electricity data cleaning}
 library(tidyverse)
@@ -100,16 +97,24 @@ electricity1 <- electricity %>%
   filter(Time > 2014 & Time < 2020) %>%
   select(-Pollutant, -Measure) %>% 
   rename(electricity_emission = Value, year = Time)
+electricity_40 <- electricity%>%
+  filter(State == "State Total") %>%
+  select(-Pollutant, -Measure) %>% 
+  rename(electricity_emission = Value, year = Time)
+
 electricity1
+electricity_40
 ```
 
 
 ```{r electricity modeling}
-mod <- lm(electricity_emission ~ year, data=electricity1)
-coeff <- coef(mod)
-ggplot(electricity1, aes(year, electricity_emission)) +  geom_abline(intercept = coeff[1], slope = coeff[2], color = "red", na.rm = FALSE) + geom_point()
+mod1 <- lm(electricity_emission ~ year, data=electricity1)
+coeff <- coef(mod1)
+print(coef)
+mod2 <- lm(electricity_emission ~ year, data=electricity_40)
+coeff2 <- coef(mod2)
+print(coeff2)
+ggplot(electricity_40, aes(year, electricity_emission)) +  geom_abline(intercept = coeff[1], slope = coeff[2], color = "red", na.rm = FALSE) + geom_point() + geom_abline(intercept = coeff2[1], slope= coeff2[2], color = "blue")
 ```
 
-
-
-
+In the past 50 years, the overall pattern is a positive linear correlation between time and electricity emission in the US, we can see the slope is 17.44551 and the intercept is -32984.49507. So the equation to estimate electricity emission is electricity_emission = year * 17.44551 - 32984.49507. But during 2015-2019, there is a negative linear correlation between year and electricity emission, the slope is -64.3 and the intercept is 131454.2. Along with that line, we can see there is a clear tendency that the electricity emission in US is decreasing since 2005. So it is better to analyze the electricity emission in US by two periods of time.

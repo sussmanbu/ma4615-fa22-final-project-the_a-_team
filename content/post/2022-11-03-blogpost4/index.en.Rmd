@@ -90,7 +90,7 @@ Agri2 %>%
                     Emission)) +
   geom_boxplot() + coord_flip() + labs(title = "CO2 emission by sources", x = "Emissions(tonnes)", y = "source of emission")
 ```
-
+In the last blogpost, we plotted the CO2 emission for the largest sources as a pie chart to show the proportion of each factor. The emission in different year is separately plotted. For blogpost 4, we are trying to focus on the source of emission itself. Therefore, we made source or emission vs. amount of emission, and each point is representing the amount of CO2 that the source released in a specific years. In this way, the graph is easier and clear for the audience to interpret.  Furthermore, we did a box-plot for the data. As a result, we now can see a different distribution of data point for each source. This is beneficial because it provides more detail for us to examine those with unusual data point. For example, we saw that the AFOLU and Agriculture land has some extreme outliers in some of the years. We could then trace back to the original data and possibly find a cause to that. Additionally, we could cross datasets to see if that is a common trend for other sectors. If these trends are commonly shared, it is possible that there is some variable that can be used in modeling and thus predict the CO2 emission for future. For instance, we could construct a model that shows if we know that one sector has a higher emission this year, some of the other source might also have an increased emission by some percentage.
 
 ```{r electricity data cleaning}
 library(tidyverse)

@@ -84,7 +84,10 @@ electricity1 <- electricity %>%
   filter(Time > 2014 & Time < 2020) %>%
   select(-Pollutant, -Measure) %>% 
   rename(electricity_emission = Value, year = Time)
+electricity1
 ```
+
+
 ```{r graph3}
 mod <- lm(electricity_emission ~ year, data=electricity1)
 coeff <- coef(mod)

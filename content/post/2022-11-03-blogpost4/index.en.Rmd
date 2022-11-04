@@ -29,7 +29,7 @@ air1
 ```
 
 
-```{r airline -> EDA1}
+```{r airline EDA}
 air1 %>% ggplot(aes(x = Year, y = Emission)) +
   geom_point(aes(color = flight_type), size = 1) +
   stat_smooth(aes(group = flight_type, color = flight_type), alpha = 0.5, geom = "line") + labs(title = "CO2 emission by year", x = "year", y = "CO2 Emission (tonnes)")
@@ -47,7 +47,7 @@ In the second graph, we are trying to explore the summarized trend of emissions 
 In the third graph, we try to extend to include the relationship between resources of emissions and emissions for a more comprehensive explanation of emission trend.  In the more detailed graph, there are 12 sources of emissions, and “(G)-international flight departing from country A, operated by an airline that is non-resident in country A” is the resource that created biggest influence, while B and F are the resources that created smallest influence.
 
 
-```{r airline -> modeling}
+```{r airline modeling}
 air1 <- lm(Emission ~ Year, data = air1)
 (beta <- coef(air1))
 air1 %>% ggplot(aes(Year, Emission)) + geom_point() +  geom_abline(intercept = beta[1],
@@ -55,7 +55,7 @@ air1 %>% ggplot(aes(Year, Emission)) + geom_point() +  geom_abline(intercept = b
 ```
 
 
-```{r agriculture -> data cleaning}
+```{r agriculture data cleaning}
 library(dplyr)
 library(tidyverse)
 Agri <- read_csv("FAOSTAT.csv", show_col_types = FALSE) 
@@ -76,7 +76,7 @@ Agri2
 ```
 
 
-```{r agriculture -> EDA}
+```{r agriculture EDA}
 Agri2 %>%
   filter(source_of_emissions == "Emissions on agricultural land" | source_of_emissions == "Farm-gate emissions" | source_of_emissions == "IPCC Agriculture" | 
            source_of_emissions == "AFOLU" | source_of_emissions == "Enteric Fermentation") %>%
@@ -92,7 +92,7 @@ Agri2 %>%
 ```
 
 
-```{r electricity -> data cleaning}
+```{r electricity data cleaning}
 library(tidyverse)
 electricity <- read_csv("electricity_co2.csv", show_col_types = FALSE)
 electricity1 <- electricity %>%
@@ -104,7 +104,7 @@ electricity1
 ```
 
 
-```{r electricity -> modeling}
+```{r electricity modeling}
 mod <- lm(electricity_emission ~ year, data=electricity1)
 coeff <- coef(mod)
 ggplot(electricity1, aes(year, electricity_emission)) +  geom_abline(intercept = coeff[1], slope = coeff[2], color = "red", na.rm = FALSE) + geom_point()

@@ -76,3 +76,18 @@ Agri2 %>%
   geom_boxplot() + coord_flip()
 ```
 
+```{r electricity}
+library(tidyverse)
+electricity <- read_csv("electricity_co2.csv", show_col_types = FALSE)
+electricity1 <- electricity %>%
+  filter(State == "State Total") %>%
+  filter(Time > 2014 & Time < 2020) %>%
+  select(-Pollutant, -Measure) %>% 
+  rename(electricity_emission = Value, year = Time)
+mod <- lm(electricity_emission ~ year, data=electricity1)
+coeff <- coef(mod)
+ggplot(electricity1, aes(year, electricity_emission)) +  geom_abline(intercept = coeff[1], slope = coeff[2], color = "red", na.rm = FALSE) + geom_point()
+```
+
+
+

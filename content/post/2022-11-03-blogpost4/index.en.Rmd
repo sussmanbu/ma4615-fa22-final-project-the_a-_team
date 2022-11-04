@@ -1,0 +1,78 @@
+---
+title: blogpost4
+author: The_A+_team
+date: '2022-11-03'
+slug: []
+categories: []
+tags: []
+description: ~
+toc: yes
+authors: []
+series: []
+lastmod: '2022-11-03T23:33:20-04:00'
+featuredVideo: ~
+featuredImage: ~
+---
+
+```{r airline}
+library(dplyr)
+library(tidyverse)
+air1 <- read_csv("AIRTRANS_CO2.csv", show_col_types = FALSE) %>% 
+  filter(LOCATION == "USA", values_drop_na = TRUE) %>% 
+  arrange(order(Time)) %>% 
+  select(-POLLUTANT, -MEASURE, -FLIGHT, -FREQUENCY, -SOURCE, -SEASONALITY, -TIME, -`Flag Codes`, -Flags, -Pollutant, -LOCATION) %>% 
+  filter(Time > 2014 & Time < 2020) %>% 
+  rename(flight_type = `Flight type`, source_of_emissions = `Source of emissions`, Year = Time, Emission = Value) %>%
+  ungroup() 
+air1
+```
+
+
+```{r graph}
+air1 %>% ggplot(aes(x = Year, y = Emission)) +
+  geom_point(aes(color = flight_type), size = 1) +
+  stat_smooth(aes(group = flight_type), color='black', alpha = 0.5, geom = "line")
+
+air1 %>% ggplot(aes(factor(flight_type), Emission)) +
+  geom_boxplot()
+
+air1 %>% ggplot(aes(factor(source_of_emissions), Emission)) + geom_boxplot() + theme(axis.text.x = element_text(size=5, angle=45, vjust=0.8, hjust=0.8)) 
+```
+
+
+```{r agriculture}
+library(dplyr)
+library(tidyverse)
+Agri <- read_csv("FAOSTAT.csv", show_col_types = FALSE) 
+Agri2 <- 
+  Agri %>% filter(Area == "United States of America") %>%
+  filter(str_detect(Element, "CO2eq")) %>%
+  mutate(unit = "tonnes") %>%
+  select(Area, Item, Element,unit, Y2015:Y2019) %>%
+  pivot_longer(c(Y2015:Y2019),
+               names_to = "year_new", values_to = "emission") %>%
+  mutate(total = emission * 1000) %>%
+  select(-emission) %>%
+  arrange(order(year_new)) %>%
+  group_by(year_new, Item, Area, unit) %>%
+  summarize(sum_emission = sum(total, na.rm = TRUE, count = n()), Element) %>%
+  rename(Country = Area, Measure = unit, Emission = sum_emission, Year = year_new, source_of_emissions = Item)
+Agri2
+```
+
+
+```{r graph2}
+Agri2 %>%
+  filter(source_of_emissions == "Emissions on agricultural land" | source_of_emissions == "Farm-gate emissions" | source_of_emissions == "IPCC Agriculture" | 
+           source_of_emissions == "AFOLU" | source_of_emissions == "Enteric Fermentation") %>%
+  ggplot(aes(x = source_of_emissions, y = Emission)) +
+  geom_point(position = "jitter")
+
+Agri2 %>%
+  filter(source_of_emissions == "Emissions on agricultural land" | source_of_emissions == "Farm-gate emissions" | source_of_emissions == "IPCC Agriculture" | 
+           source_of_emissions == "AFOLU" | source_of_emissions == "Enteric Fermentation") %>%
+  ggplot(aes(factor(source_of_emissions),
+                    Emission)) +
+  geom_boxplot() + coord_flip()
+```
+

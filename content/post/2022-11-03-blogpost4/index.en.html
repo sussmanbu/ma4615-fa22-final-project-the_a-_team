@@ -45,17 +45,43 @@ featuredImage: ~
   select(-POLLUTANT, -MEASURE, -FLIGHT, -FREQUENCY, -SOURCE, -SEASONALITY, -TIME, -`Flag Codes`, -Flags, -Pollutant, -LOCATION) %&gt;% 
   filter(Time &gt; 2014 &amp; Time &lt; 2020) %&gt;% 
   rename(flight_type = `Flight type`, source_of_emissions = `Source of emissions`, Year = Time, Emission = Value) %&gt;%
-  ungroup() </code></pre>
+  ungroup() 
+
+air1</code></pre>
+<pre><code>## # A tibble: 180 × 8
+##    Country  Measure  flight_type  Frequency source_of_emissio… Seasonality Year 
+##    &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt;              &lt;chr&gt;       &lt;chr&gt;
+##  1 United … tonnes … All flights  Annual    &quot;\&quot;(A) - Domestic… Non season… 2015 
+##  2 United … tonnes … All flights  Annual    &quot;\&quot;(E) - Internat… Non season… 2015 
+##  3 United … tonnes … All flights  Annual    &quot;Bridging item - … Non season… 2015 
+##  4 United … tonnes … Passenger f… Annual    &quot;\&quot;(A) - Domestic… Non season… 2015 
+##  5 United … tonnes … Passenger f… Annual    &quot;\&quot;(E) - Internat… Non season… 2015 
+##  6 United … tonnes … Passenger f… Annual    &quot;Bridging item - … Non season… 2015 
+##  7 United … tonnes … Freight fli… Annual    &quot;\&quot;(A) - Domestic… Non season… 2015 
+##  8 United … tonnes … Freight fli… Annual    &quot;\&quot;(E) - Internat… Non season… 2015 
+##  9 United … tonnes … Freight fli… Annual    &quot;Bridging item - … Non season… 2015 
+## 10 United … tonnes … All flights  Annual    &quot;\&quot;(A) - Domestic… Non season… 2016 
+## # … with 170 more rows, and 1 more variable: Emission &lt;dbl&gt;</code></pre>
 <pre class="r"><code>air1 %&gt;% ggplot(aes(x = Year, y = Emission)) +
   geom_point(aes(color = flight_type), size = 1) +
-  stat_smooth(aes(group = flight_type), color=&#39;black&#39;, alpha = 0.5, geom = &quot;line&quot;)</code></pre>
+  stat_smooth(aes(group = flight_type, color = flight_type), alpha = 0.5, geom = &quot;line&quot;) + labs(title = &quot;CO2 emission by year&quot;, x = &quot;year&quot;, y = &quot;CO2 Emission (tonnes)&quot;)</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
-<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/EDA1-1.png" width="672" /></p>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/airline -> EDA1-1.png” width=“672” /&gt;</p>
 <pre class="r"><code>air1 %&gt;% ggplot(aes(factor(flight_type), Emission)) +
-  geom_boxplot()</code></pre>
-<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/EDA1-2.png" width="672" /></p>
-<pre class="r"><code>air1 %&gt;% ggplot(aes(factor(source_of_emissions), Emission)) + geom_boxplot() + theme(axis.text.x = element_text(size=5, angle=45, vjust=0.8, hjust=0.8)) </code></pre>
-<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/EDA1-3.png" width="672" /></p>
+  geom_boxplot() + labs(title = &quot;CO2 emissions by flight type&quot;, y = &quot;CO2 Emission (tonnes)&quot;) + coord_flip()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/airline -> EDA1-2.png” width=“672” /&gt;</p>
+<pre class="r"><code>air1 %&gt;% ggplot(aes(factor(source_of_emissions), Emission)) + geom_boxplot() + theme(axis.text.x = element_text(size=5, angle=45, vjust=0.8, hjust=0.8)) + labs(title = &quot;CO2 emisssions by sources&quot;, x = &quot;year&quot;, y = &quot;CO2 Emission (tonnes)&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/airline -> EDA1-3.png” width=“672” /&gt;</p>
+<p>In blogpost 4, in order to explore further the relationship between variables, we changed the bar graph in blogpost 2 into scatterplot with more aesthetic. We make graph of emissions of all flights, freight flights, and passenger flights, and we put the data of these three types of flight at the same year into the same axis. In this way, we can easily examine the trend of emissions of different types increasing with years and at the same time compare every year emissions of different types of flights. We smooth the data to remove noise from the dataset, which allows important patterns to clearly stand out. And we can see an upward trend of emissions of the types of flights.</p>
+<p>In the second graph, we are trying to explore the summarized trend of emissions of three types flight in five years, so we combine data in five years and makes a boxplot. Boxplot is used to show overall patterns of response for a group. From the boxplot, we have the range of emissions created by the three types. As passenger flights have more emissions than freight flights, we can conclude most emissions come from passenger flights.</p>
+<p>In the third graph, we try to extend to include the relationship between resources of emissions and emissions for a more comprehensive explanation of emission trend. In the more detailed graph, there are 12 sources of emissions, and “(G)-international flight departing from country A, operated by an airline that is non-resident in country A” is the resource that created biggest influence, while B and F are the resources that created smallest influence.</p>
+<pre class="r"><code>air1 &lt;- lm(Emission ~ Year, data = air1)
+(beta &lt;- coef(air1))</code></pre>
+<pre><code>## (Intercept)    Year2016    Year2017    Year2018    Year2019 
+##    35270149     1699243     2248080     3150192     7146283</code></pre>
+<pre class="r"><code>air1 %&gt;% ggplot(aes(Year, Emission)) + geom_point() +  geom_abline(intercept = beta[1],
+              slope = beta[2]) + labs(y = &quot;Emission(tonnes)&quot; )</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/airline -> modeling-1.png” width=“672” /&gt;</p>
 <pre class="r"><code>library(dplyr)
 library(tidyverse)
 Agri &lt;- read_csv(&quot;FAOSTAT.csv&quot;, show_col_types = FALSE) 
@@ -94,15 +120,15 @@ Agri2 &lt;-
   filter(source_of_emissions == &quot;Emissions on agricultural land&quot; | source_of_emissions == &quot;Farm-gate emissions&quot; | source_of_emissions == &quot;IPCC Agriculture&quot; | 
            source_of_emissions == &quot;AFOLU&quot; | source_of_emissions == &quot;Enteric Fermentation&quot;) %&gt;%
   ggplot(aes(x = source_of_emissions, y = Emission)) +
-  geom_point(position = &quot;jitter&quot;)</code></pre>
-<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/EDA2-1.png" width="672" /></p>
+  geom_point(position = &quot;jitter&quot;) + labs(title = &quot;CO2 emission by sources&quot;, x = &quot;source of emissions&quot;, y = &quot;CO2 Emission (tonnes)&quot;) + theme(axis.text.x = element_text(size=9, angle=45, vjust=0.8, hjust=0.8))</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/agriculture -> EDA-1.png” width=“672” /&gt;</p>
 <pre class="r"><code>Agri2 %&gt;%
   filter(source_of_emissions == &quot;Emissions on agricultural land&quot; | source_of_emissions == &quot;Farm-gate emissions&quot; | source_of_emissions == &quot;IPCC Agriculture&quot; | 
            source_of_emissions == &quot;AFOLU&quot; | source_of_emissions == &quot;Enteric Fermentation&quot;) %&gt;%
   ggplot(aes(factor(source_of_emissions),
                     Emission)) +
-  geom_boxplot() + coord_flip()</code></pre>
-<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/EDA2-2.png" width="672" /></p>
+  geom_boxplot() + coord_flip() + labs(title = &quot;CO2 emission by sources&quot;, x = &quot;Emissions(tonnes)&quot;, y = &quot;source of emission&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/agriculture -> EDA-2.png” width=“672” /&gt;</p>
 <pre class="r"><code>library(tidyverse)
 electricity &lt;- read_csv(&quot;electricity_co2.csv&quot;, show_col_types = FALSE)
 electricity1 &lt;- electricity %&gt;%
@@ -122,4 +148,4 @@ electricity1</code></pre>
 <pre class="r"><code>mod &lt;- lm(electricity_emission ~ year, data=electricity1)
 coeff &lt;- coef(mod)
 ggplot(electricity1, aes(year, electricity_emission)) +  geom_abline(intercept = coeff[1], slope = coeff[2], color = &quot;red&quot;, na.rm = FALSE) + geom_point()</code></pre>
-<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/modeling-1.png" width="672" /></p>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/electricity -> modeling-1.png” width=“672” /&gt;</p>

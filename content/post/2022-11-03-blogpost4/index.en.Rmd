@@ -29,20 +29,24 @@ air1
 ```
 
 
-```{r airline EDA}
+```{r airline EDA1}
 air1 %>% ggplot(aes(x = Year, y = Emission)) +
   geom_point(aes(color = flight_type), size = 1) +
   stat_smooth(aes(group = flight_type, color = flight_type), alpha = 0.5, geom = "line") + labs(title = "CO2 emission by year", x = "year", y = "CO2 Emission (tonnes)")
-
-air1 %>% ggplot(aes(factor(flight_type), Emission)) +
-  geom_boxplot() + labs(title = "CO2 emissions by flight type", y = "CO2 Emission (tonnes)") + coord_flip()
-
-air1 %>% ggplot(aes(factor(source_of_emissions), Emission)) + geom_boxplot() + theme(axis.text.x = element_text(size=5, angle=45, vjust=0.8, hjust=0.8)) + labs(title = "CO2 emisssions by sources", x = "year", y = "CO2 Emission (tonnes)")
 ```
 
 In blogpost 4, in order to explore further the relationship between variables, we changed the bar graph in blogpost 2 into scatterplot with more aesthetic. We make graph of emissions of all flights, freight flights, and passenger flights, and we put the data of these three types of flight at the same year into the same axis. In this way, we can easily examine the trend of emissions of different types increasing with years and at the same time compare every year emissions of different types of flights. We smooth the data to remove noise from the dataset, which allows important patterns to clearly stand out. And we can see an upward trend of emissions of the types of flights. 
 
+```{r airline EDA2}
+air1 %>% ggplot(aes(factor(flight_type), Emission)) +
+  geom_boxplot() + labs(title = "CO2 emissions by flight type", y = "CO2 Emission (tonnes)") + coord_flip()
+```
+
 In the second graph, we are trying to explore the summarized trend of emissions of three types flight in five years, so we combine data in five years and makes a boxplot. Boxplot is used to show overall patterns of response for a group. From the boxplot, we have the range of emissions created by the three types. As passenger flights have more emissions than freight flights, we can conclude most emissions come from passenger flights. 
+
+```{r airline EDA3}
+air1 %>% ggplot(aes(factor(source_of_emissions), Emission)) + geom_boxplot() + theme(axis.text.x = element_text(size=5, angle=45, vjust=0.8, hjust=0.8)) + labs(title = "CO2 emisssions by sources", x = "year", y = "CO2 Emission (tonnes)")
+```
 
 In the third graph, we try to extend to include the relationship between resources of emissions and emissions for a more comprehensive explanation of emission trend.  In the more detailed graph, there are 12 sources of emissions, and “(G)-international flight departing from country A, operated by an airline that is non-resident in country A” is the resource that created biggest influence, while B and F are the resources that created smallest influence.
 

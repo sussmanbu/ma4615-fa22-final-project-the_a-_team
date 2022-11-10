@@ -1,0 +1,79 @@
+---
+title: blogpost5
+author: The_A+_team
+date: '2022-11-10'
+slug: []
+categories: []
+tags: []
+description: ~
+toc: yes
+authors: []
+series: []
+lastmod: '2022-11-10T17:09:37-05:00'
+featuredVideo: ~
+featuredImage: ~
+---
+
+```{r agriculture data cleaning}
+library(dplyr)
+library(tidyverse)
+Agri <- read_csv("FAOSTAT.csv", show_col_types = FALSE) 
+Agri2 <- 
+  Agri %>% filter(Area == "United States of America") %>%
+  filter(str_detect(Element, "CO2eq")) %>%
+  mutate(unit = "tonnes") %>%
+  select(Area, Item, Element,unit, Y2015:Y2019) %>%
+  pivot_longer(c(Y2015:Y2019),
+               names_to = "year_new", values_to = "emission") %>%
+  mutate(total = emission * 1000) %>%
+  select(-emission) %>%
+  arrange(order(year_new)) %>%
+  group_by(year_new, Item, Area, unit) %>%
+  summarize(sum_emission = sum(total, na.rm = TRUE, count = n()), Element) %>%
+  rename(Country = Area, Measure = unit, Emission = sum_emission, Year = year_new,   source_of_emissions = Item) %>%
+  mutate(year = gsub("Y", "", Year)) %>%
+  select(-Year)
+Agri2
+
+```
+
+
+```{r airline -> data cleaning}
+library(dplyr)
+library(tidyverse)
+air1 <- read_csv("AIRTRANS_CO2.csv", show_col_types = FALSE) %>% 
+  filter(LOCATION == "USA", values_drop_na = TRUE) %>% 
+  arrange(order(Time)) %>% 
+  select(-POLLUTANT, -MEASURE, -FLIGHT, -FREQUENCY, -SOURCE, -SEASONALITY, -TIME, -`Flag Codes`, -Flags, -Pollutant, -LOCATION) %>% 
+  filter(Time > 2014 & Time < 2020) %>% 
+  rename(flight_type = `Flight type`, source_of_emissions = `Source of emissions`, Year = Time, Emission = Value) %>%
+  rename(year = Year) %>%
+  ungroup() 
+
+air1
+
+```
+
+```{r combine}
+air1 %>%
+  select(year, source_of_emissions, Country, Measure, flight_type, Emission) %>%
+  left_join(Agri2, by = "year") %>%
+  mutate(sum_emission = Emission.x + Emission.y)
+```
+
+```{r electricity data cleaning}
+library(tidyverse)
+electricity <- read_csv("electricity_co2.csv", show_col_types = FALSE)
+electricity1 <- electricity %>%
+  filter(State == "State Total") %>%
+  filter(Time > 2014 & Time < 2020) %>%
+  select(-Pollutant, -Measure) %>% 
+  rename(electricity_emission = Value, year = Time)
+electricity_40 <- electricity%>%
+  filter(State == "State Total") %>%
+  select(-Pollutant, -Measure) %>% 
+  rename(electricity_emission = Value, year = Time)
+
+electricity1
+electricity_40
+```

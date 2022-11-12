@@ -77,3 +77,15 @@ electricity_40 <- electricity%>%
 electricity1
 electricity_40
 ```
+
+What you initial findings were?
+After we bring together the dataset of flights and agriculture, we find the sum of emission has an upward trend, and it slightly increased every year. 
+
+Were there any difficulties in combing the data?
+Yes, we find that we cannot combine the dataset of electricity with dataset of flights and agriculture. It is because electricity emission are sorted by different states in United States, but for flights and agriculture, emissions are only sorted by United States as a whole. As emissions are sorted by different factors, we can only combine datasets of flights and agriculture, which are both only sorted by the United States as a whole. Secondly, at first we cannot make sure which function of “join” should be used to combine the dataset. There appears “NA”, and if we try to remove “NA”, many observations may disappear.
+
+please describe the datasets you are combining, how you are combining them?
+
+In this blog post, we combined the datasets of agriculture and airline. For both datasets, we did data cleaning first, and then by using `select` to get the varaibles like year, source of emission, country, measure, flight type, and emission in airline dataset. And then using `left_join` to combine two datasets together by "year". Lastly, we combined emission in these two categories together to create a new variable. 
+
+The reason why we did not combine electricty dataset altogether with the other two is the electricity only have the the emission amout, so it is hard to create a relationship with variables in the other two dataset.

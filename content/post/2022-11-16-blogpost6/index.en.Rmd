@@ -1,0 +1,64 @@
+---
+title: blogpost6
+author: The_A+_team
+date: '2022-11-16'
+slug: []
+categories: []
+tags: []
+description: ~
+toc: yes
+authors: []
+series: []
+lastmod: '2022-11-16T09:20:28-05:00'
+featuredVideo: ~
+featuredImage: ~
+---
+
+```{r agriculture data cleaning}
+library(dplyr)
+library(tidyverse)
+Agri <- read_csv("FAOSTAT.csv", show_col_types = FALSE) 
+Agri2 <- 
+  Agri %>% filter(Area == "United States of America") %>%
+  filter(str_detect(Element, "CO2eq")) %>%
+  mutate(unit = "tonnes") %>%
+  select(Area, Item, Element, unit, Y2015:Y2019) %>%
+  pivot_longer(c(Y2015:Y2019),
+               names_to = "year", values_to = "emission") %>%
+  mutate(total = emission * 1000) %>%
+  select(-emission) %>%
+  arrange(order(year)) %>%
+  group_by(year, Item, Area) %>%
+  summarize(sum_emission = sum(total, na.rm = TRUE, count = n()), Element) %>%
+  rename(Country = Area, Emission = sum_emission, source_of_emissions = Item, `Element(tonnes)` = Element) %>%
+  mutate(year = gsub("Y", "", year)) %>%
+  select(-Country) %>%
+  ungroup()
+Agri2
+
+```
+
+```{r airline -> data cleaning}
+library(dplyr)
+library(tidyverse)
+air1 <- read_csv("AIRTRANS_CO2.csv", show_col_types = FALSE) %>% 
+  filter(LOCATION == "USA", values_drop_na = TRUE) %>% 
+  arrange(order(Time)) %>% 
+  select(-POLLUTANT, -MEASURE, -FLIGHT, -FREQUENCY, -SOURCE, -SEASONALITY, -TIME, -`Flag Codes`, -Flags, -Pollutant, -LOCATION) %>% 
+  filter(Time > 2014 & Time < 2020) %>% 
+  rename(flight_type = `Flight type`, source_of_emissions = `Source of emissions`, Year = Time, Emission = Value, `Element(tonnes)` = Measure) %>%
+  rename(year = Year) %>%
+  select(-Frequency, -Seasonality) %>%
+  select(Country, year, source_of_emissions, Emission, `Element(tonnes)`) %>%
+  ungroup() 
+
+air1
+```
+
+
+```{r}
+Agri_air <- rbind(Agri2, air1)
+```
+
+
+

@@ -61,4 +61,22 @@ Agri_air <- rbind(Agri2, air1)
 ```
 
 
+```{r vehicle data cleaning}}
+vehi <- read_csv("Vehicle.csv", show_col_types = FALSE, skip = 1)
+vehi1 <- vehi %>%
+  filter(!row_number() %in% c(1,2,3,23,24,27:95)) %>%
+  rename(source_of_emissions = ...1) %>%
+  select(source_of_emissions, "2015":"2019") %>%
+  pivot_longer(c("2015":"2019"), names_to = "year")%>%
+  arrange(order("year")) 
+
+vehi1
+```
+
+
+```{r combine three datasets}
+Agri_air_car <- left_join(Agri_air, vehi1, by = "year")
+Agri_air_car
+save(Agri2, air1, vehi1, file = "Agri_air_car.RData")
+```
 

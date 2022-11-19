@@ -13,6 +13,30 @@ lastmod: '2022-11-16T09:20:28-05:00'
 featuredVideo: ~
 featuredImage: ~
 ---
+1) What’s your progress until now?
+
+This week as our interactive draft, we created the first interactive that shows the number of emissions in the flight and agriculture sectors of the year chosen by the user. For a more precise guide, we filtered out the most prominent factors in each industry and displayed them in one bar graph. In this way, not only can the user see specific data point, but also they could see some trends if they select all the years. We also made an interactive that contains all three datasets. It enables users to choose the categories of emission sources as well as the various types of vehicles in desired years—this allows them to compare how the effect changes in the big picture.
+
+By using these interactive, we want to engage US households primarily. They are the direct users of these vehicles and will be the most impacted group by climate change. The US is ranked first in CO2 emissions worldwide, and the top contributor to that emission is cars. Clean energy is a big trend now, and technological progress has made it possible to switch the electric vehicles. We believe it will make a difference if we can provide some sense to the public regarding the importance of reducing CO2 emissions.
+
+Additionally, we think it would also concern the US government because the US is one of the most prominent countries that highly relay on private vehicles rather than public transportation. And we know that one of the reasons is that the public transport system could not meet the needs of a sufficient amount of people. By using our interactive, we want to display the benefits of constructing new or reforming the existing transportation system. In this way, we might strengthen the force that pushes us to a greener environment.
+
+ 
+2) Are there any difficulties during the process?
+
+The main point of this project was to analyze the emission factors caused by human activities. By showing the impact, we could alert people to be more aware of reducing CO2 emissions. We initially chose electricity as one of our datasets, but as it is collected differently from the other two datasets, we could not combine them. Therefore, in our interactive, we combined with the third dataset containing the number of vehicles in the US over five years. We will analyze the combined dataset describing emissions from the agriculture, flight sectors and number vehicles.
+
+
+3) Interactive ideas and plots/tables
+
+Trend Interactive:  https://finalprojecta.shinyapps.io/FinalProject/
+Our thoughts is to create two interactive.  The first one combines datasets of agriculture and airlines from 2015 to 2019. We will present emissions corresponding to specific source of emissions from agriculture and airlines. It will allow users to explore emissions at different years. Through exploring data across years, users are able to observe the gradual change of emissions from different sources along with time. This interactive enables users to have a general understanding of the trend of emissions from 2015-2019.
+
+Interactive Table: We already made the interactive table, but it had trouble publishing to shiny app website. We will figure it out next week.
+For the second interactive, we will try to combine datasets of agriculture, airlines and vehicles. Users can play with flight source of emissions, years, and cars type to see how emission can change with these variables. Users can also search for key words that they are interested in, and our interactive will immediately guide users to the corresponding result. The purpose of these two interactives are to provide a clear picture of emission affected by different factors in the United States.
+
+
+Data Cleaning and Combining Process
 
 ```{r agriculture data cleaning}
 library(dplyr)
@@ -38,7 +62,7 @@ Agri2
 
 ```
 
-```{r airline -> data cleaning}
+```{r airline data cleaning}
 library(dplyr)
 library(tidyverse)
 air1 <- read_csv("AIRTRANS_CO2.csv", show_col_types = FALSE) %>% 
@@ -56,19 +80,23 @@ air1
 ```
 
 
-```{r}
+```{r combining two datasets}
 Agri_air <- rbind(Agri2, air1)
+Agri_air
 ```
 
 
 ```{r vehicle data cleaning}}
-vehi <- read_csv("Vehicle.csv", show_col_types = FALSE, skip = 1)
+vehi <- read_csv("Vehicle.csv", show_col_types = FALSE, skip = 1,
+                 col_types = cols(
+                   value = col_number()
+                 ))
 vehi1 <- vehi %>%
   filter(!row_number() %in% c(1,2,3,23,24,27:95)) %>%
   rename(source_of_emissions = ...1) %>%
   select(source_of_emissions, "2015":"2019") %>%
   pivot_longer(c("2015":"2019"), names_to = "year")%>%
-  arrange(order("year")) 
+  arrange(order("year")) %>% na.omit(vehi) %>% rename(type_of_cars = source_of_emissions)
 
 vehi1
 ```
@@ -78,5 +106,6 @@ vehi1
 Agri_air_car <- left_join(Agri_air, vehi1, by = "year")
 Agri_air_car
 save(Agri2, air1, vehi1, file = "Agri_air_car.RData")
+save(Agri2, air1, vehi1, file = "Agri_air_car.csv")
 ```
 

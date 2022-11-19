@@ -13,7 +13,7 @@ lastmod: '2022-11-16T09:20:28-05:00'
 featuredVideo: ~
 featuredImage: ~
 ---
-1) What’s your progress until now?
+1) What’s the progress until now?
 
 This week as our interactive draft, we created the first interactive that shows the number of emissions in the flight and agriculture sectors of the year chosen by the user. For a more precise guide, we filtered out the most prominent factors in each industry and displayed them in one bar graph. In this way, not only can the user see specific data point, but also they could see some trends if they select all the years. We also made an interactive that contains all three datasets. It enables users to choose the categories of emission sources as well as the various types of vehicles in desired years—this allows them to compare how the effect changes in the big picture.
 
@@ -30,10 +30,13 @@ The main point of this project was to analyze the emission factors caused by hum
 3) Interactive ideas and plots/tables
 
 Trend Interactive:  https://finalprojecta.shinyapps.io/FinalProject/
-Our thoughts is to create two interactive.  The first one combines datasets of agriculture and airlines from 2015 to 2019. We will present emissions corresponding to specific source of emissions from agriculture and airlines. It will allow users to explore emissions at different years. Through exploring data across years, users are able to observe the gradual change of emissions from different sources along with time. This interactive enables users to have a general understanding of the trend of emissions from 2015-2019.
+
+The first one combines datasets of agriculture and airlines from 2015 to 2019. We will present emissions corresponding to specific source of emissions from agriculture and airlines. It will allow users to explore emissions at different years. Through exploring data across years, users are able to observe the gradual change of emissions from different sources along with time. This interactive enables users to have a general understanding of the trend of emissions from 2015-2019.
 
 Interactive Table: We already made the interactive table, but it had trouble publishing to shiny app website. We will figure it out next week.
+
 For the second interactive, we will try to combine datasets of agriculture, airlines and vehicles. Users can play with flight source of emissions, years, and cars type to see how emission can change with these variables. Users can also search for key words that they are interested in, and our interactive will immediately guide users to the corresponding result. The purpose of these two interactives are to provide a clear picture of emission affected by different factors in the United States.
+
 
 
 Data Cleaning and Combining Process

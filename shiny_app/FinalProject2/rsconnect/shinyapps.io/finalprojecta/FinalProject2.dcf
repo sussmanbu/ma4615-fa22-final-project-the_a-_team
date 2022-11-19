@@ -1,0 +1,14 @@
+name: FinalProject2
+title: FinalProject2
+username:
+account: finalprojecta
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7676409
+bundleId: 6531478
+url: https://finalprojecta.shinyapps.io/FinalProject2/
+when: 1668826456.30423
+lastSyncTime: 1668826456.30424
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: Agri_air_car.csv

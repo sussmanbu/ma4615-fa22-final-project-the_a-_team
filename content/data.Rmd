@@ -8,24 +8,6 @@ draft: false
 ---
 ----
 
-## Rubric: On this page
-
-you will
-
-* Describe where/how to find data.
-  * You must include a link to the original data source(s). Make sure to provide attribution to those who collected the data.
-  * Why was the data collected/curated? Who put it together? (This is important, if you don't know why it was collected then that might not be a good dataset to look at.
-* Describe the different data files used and what each variable means. 
-  * If you have many variables then only describe the most relevant ones and summarize the rest.
-* Describe any cleaning you had to do for your data.
-  * You *must* include a link to your `load_and_clean_data.R` file.
-  * Also, describe any additional R packages you used outside of those covered in class.
-  * Describe and show code for how you combined multiple data files and any cleaning that was necessary for that.
-  * Some repetition of what you do in your `load_and_clean_data.R` file is fine and encouraged if it helps explain what you did.
-* Organization, clarity, cleanliness of the page
-  * Make sure to remove excessive warnings, use clean easy-to-read code (without side scrolling), organize with sections, use bullets and other organization tools, etc.
-
-
 ## **Data source**
 
 * Global climate change has always been a heated topic worldwide. Since the Paris Climate Agreement was signed in 2015, major countries have taken action to cut CO2 emissions and to operate cleaner and greener. The United States, being the top emitter of CO2 in the world, is an effective representative for us to analyze how far we are in reaching the goal. Therefore, in this project, we will be looking at the CO2 emission trends of the United States in the period `2015 - 2019`. In particular, we will choose flight, agriculture, and vehicle industry as the focal factors in our study.
@@ -66,9 +48,9 @@ air1
 
 **Variables explanation**
 
-* Domestic aviation: It is the domestic flights that takes place entirely in one country, which means the departure and arrival cities are all the in same country----U.S. CO2 is the largest component of aircraft emissions, accounting for approximately 70 percent of the exhaust.
+* **Domestic aviation**: It is the domestic flights that takes place entirely in one country, which means the departure and arrival cities are all the in same country----U.S. CO2 is the largest component of aircraft emissions, accounting for approximately 70 percent of the exhaust.
 
-* International aviation:Flying to a different country is referred to as an international flight. It is made through international airports and keeps tourism and trade between countries alive at the same time.
+* **International aviation**:Flying to a different country is referred to as an international flight. It is made through international airports and keeps tourism and trade between countries alive at the same time.
 
 
 ## **Links to the original data sources (Agriculture):**
@@ -119,15 +101,15 @@ Agri2
 
 * The emission primarily alludes to `GHG(greenhouse gas)`, and while CO2 accounts for about 76 percent of total greenhouse gas emissions, we mainly focus on `CO2 emissions` in our project. The emission connects strictly with the conditions of climate, so it can be an important index to judge the climate situation. In our project, emission is a dependent variable that can be influenced by many independent variables that I will mention in the following.
 
-* AFOLU: AFOLU is abbreviation of Agriculture, Forestry and other land use. It can be considered as a sector that contributes to the emission.
+* **AFOLU**: AFOLU is abbreviation of Agriculture, Forestry and other land use. It can be considered as a sector that contributes to the emission.
 
-* farm-gate emission: Field to Farm Gate refers to the emissions caused by the act of growing a specific ingredient before any factory, processing, transportation, or distribution emissions.
+* **farm-gate emission**: Field to Farm Gate refers to the emissions caused by the act of growing a specific ingredient before any factory, processing, transportation, or distribution emissions.
 
-* Enteric Fermentation: It is a natural part of the digestive process in ruminant animals such as cattle, sheep, goats, and buffalo. Methane will produced by enteric fermentation as a by-product.
+* **Enteric Fermentation**: It is a natural part of the digestive process in ruminant animals such as cattle, sheep, goats, and buffalo. Methane will produced by enteric fermentation as a by-product.
 
-* IPCC Agricultural: Intergovernmental panel on climate change.The following sectors are included: energy, industrial processes, agriculture, land-use change and forestry, and waste.
+* **IPCC Agricultural**: Intergovernmental panel on climate change.The following sectors are included: energy, industrial processes, agriculture, land-use change and forestry, and waste.
 
-* Emission on agricultural land: It refers to the share of land area that is arable, under permanent crops, and under permanent pastures.Most farm-related emissions come in the form of methane and nitrogenous oxide.
+* **Emission on agricultural land**: It refers to the share of land area that is arable, under permanent crops, and under permanent pastures.Most farm-related emissions come in the form of methane and nitrogenous oxide.
 Enteric Fermentation: It is a natural part of the digestive process in ruminant animals such as cattle, sheep, goats, and buffalo. Methane will produced by enteric fermentation as a by-product.
 
 
@@ -147,6 +129,8 @@ Enteric Fermentation: It is a natural part of the digestive process in ruminant 
 * Since we had already combined emissions on Airplanes and Agriculture by rows, I used `filter()` to remove the Air carrier column. Also, we want to find the effect of vehicles on CO2 emissions; I used `filter()` to filter out the water vehicles. Thus, only Highway vehicles and Rail Transportation were kept in the dataset. The title of the types of vehicles is missing. I used `ls()` to list all of the variables' names, and then I `rename()` the title for the types of vehicles. Finally, the dataset is too wide, and years are all layout as variables. It will need to be clarified for future interpretation because the same observation cannot be across multiple columns. Thus, I used `pivot_longer()` to make the dataset longer rather than wide. As before, we `arrange()` years for straightforward interpretation. 
 
 ```{r vehicle data cleaning}}
+library(dplyr)
+library(tidyverse)
 vehi <- read_csv("Vehicle.csv", show_col_types = FALSE, skip = 1,
                  col_types = cols(
                    value = col_number()
@@ -164,9 +148,9 @@ vehi1
 
 **Variables explanation**
 
-* highway:It is a public or private road or other public way on land. Transportation on highway can produce a large amount of emission every year.
+* **highway**: It is a public or private road or other public way on land. Transportation on highway can produce a large amount of emission every year.
 
-* bus:It is a large motor vehicle carrying passengers by road. Bus is a public transportation tool that takes many people at the same time, so it improves energy efficiency. It produces less emissions compared with nonpublic transportation tools like cars. Buses can reduce carbon emissions by as much as 37 million metric tons per year
+* **bus**: It is a large motor vehicle carrying passengers by road. Bus is a public transportation tool that takes many people at the same time, so it improves energy efficiency. It produces less emissions compared with nonpublic transportation tools like cars. Buses can reduce carbon emissions by as much as 37 million metric tons per year
 Amtrak(passenger train car):It operates inter-city rail service in 46 of the 48 contiguous U.S. States. Passenger train car solely takes people. The emissions for rail were computed under the assumption that an Amtrak uses 2.2 gallons of fuel per mile, and the locomotives produce about 33.6 Kg of CO2e per mile.
 
 

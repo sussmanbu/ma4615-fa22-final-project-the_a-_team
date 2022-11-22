@@ -47,6 +47,7 @@ air1 <- read_csv("AIRTRANS_CO2.csv", show_col_types = FALSE) %>%
 air1
 ```
 
+\newline
 
 **Variables explanation**
 
@@ -100,6 +101,7 @@ Agri2
 
 ```
 
+\newline
 
 **Variables explanations**
 
@@ -122,6 +124,7 @@ Enteric Fermentation: It is a natural part of the digestive process in ruminant 
 * https://www.bts.gov/content/number-us-aircraft-vehicles-vessels-and-other-conveyances
 
   * Attribution: Bureau of Transportation Statistics official website
+
 
 **Data collection**
 
@@ -149,7 +152,7 @@ vehi1 <- vehi %>%
 
 vehi1
 ```
-
+\newline
 
 **Variables explanation**
 

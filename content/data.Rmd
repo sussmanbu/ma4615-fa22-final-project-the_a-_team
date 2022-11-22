@@ -3,7 +3,7 @@ title: Data
 description:
 toc: true
 featuredVideo:
-featuredImage: images/data-import-cheatsheet-thumbs.png
+featuredImage: images/data page.png
 draft: false
 ---
 ----
@@ -29,6 +29,7 @@ draft: false
 
 * First, according to the scope of the study determined by the group, we will focus on CO2 emissions in the United States. Using `filter()` and `values_drop_na` to narrow down and ignore NAs. We only research on time from 2015 - 2019. To clarify the dataset, I use `arrange()` to arrange data by time. In this way, we can see the trend of emissions by year. For the dataset I found, there are repeated columns with redundant information. Thus, I used `select()` to remove some irrelevant columns to our research topic. For the convenience of combining the three datasets we found, I `rename()` all of the titles of variables matching in the other two datasets. In order to match the number of columns between two datasets, I only keep the most important variable: `source of emissions`. I used `select()` to keep the variables I wanted. Finally, `ungroup()` ensures future data management. 
 
+
 ```{r airline data cleaning}
 library(dplyr)
 library(tidyverse)
@@ -45,6 +46,7 @@ air1 <- read_csv("AIRTRANS_CO2.csv", show_col_types = FALSE) %>%
 
 air1
 ```
+
 
 **Variables explanation**
 
@@ -72,6 +74,7 @@ air1
 
 * After exploring the dataset, I first filtered out the region and time. We focus on the data from 2015 to 2019 in the United States for all three datasets. And then, I filtered the emission element, which is CO2 emission. In order to make three datasets uniform, I added a new column for the unit “tonnes” by using `mutate()`, so that it matches the other two datasets. Then I changed the emission values by multiplying 1000 to convert it to tonnes. I selected the columns I needed by `select()`. To make the dataset more organized and easy to read, I renamed several variables to make them coherent with the other two datasets. Since the original dataset is wide, I change the format of the dataset by using `pivot_longer`. So that the year becomes the rows and the whole table looks clear and concise.
 
+
 ```{r agriculture data cleaning}
 library(dplyr)
 library(tidyverse)
@@ -96,6 +99,7 @@ Agri2 <-
 Agri2
 
 ```
+
 
 **Variables explanations**
 
@@ -127,6 +131,7 @@ Enteric Fermentation: It is a natural part of the digestive process in ruminant 
 **Data cleaning**
 
 * Since we had already combined emissions on Airplanes and Agriculture by rows, I used `filter()` to remove the Air carrier column. Also, we want to find the effect of vehicles on CO2 emissions; I used `filter()` to filter out the water vehicles. Thus, only Highway vehicles and Rail Transportation were kept in the dataset. The title of the types of vehicles is missing. I used `ls()` to list all of the variables' names, and then I `rename()` the title for the types of vehicles. Finally, the dataset is too wide, and years are all layout as variables. It will need to be clarified for future interpretation because the same observation cannot be across multiple columns. Thus, I used `pivot_longer()` to make the dataset longer rather than wide. As before, we `arrange()` years for straightforward interpretation. 
+
 
 ```{r vehicle data cleaning}}
 library(dplyr)
@@ -170,7 +175,4 @@ save(Agri2, air1, vehi1, file = "Agri_air_car.RData")
 save(Agri2, air1, vehi1, file = "Agri_air_car.csv")
 ```
 
-
-  
-  
   

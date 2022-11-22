@@ -6,78 +6,6 @@ featuredVideo:
 featuredImage: images/data-import-cheatsheet-thumbs.png
 draft: false
 ---
-
-
-
-This comes from the file `content/data.Rmd`.
-
-Your first steps in this project will be to find data to work on.
-
-I recommend trying to find data that interests you and that you are knowledgeable about. A bad example would be if you have no interest in video games but your data set is about video games. I also recommend finding data that is related to current events, social justice, and other areas that have an impact.
-
-You are __not__ allowed to work on COVID data.
-
-Initially, you will study _one dataset_ but later you will need to combine that data with another dataset. For this reason, I recommend finding data that has some date and/or location components. These types of data are conducive to interesting visualizations and analysis and you can also combine this data with other data that also has a date or location variable.
-Data from the census, weather data, economic data, are all relatively easy to combine with other data with time/location components.
-
-
-## Where to keep data?
-
-
-Below 50mb: In `dataset` folder
-
-Above 50mb: In `dataset_ignore` folder. This folder will be ignored by `git` so you'll have to manually sync these files across your team.
-
-### Sharing your data
-
-
-For small datasets (<50mb), you can use the `dataset` folder that is tracked by github. Add the files just like you would any other file.
-
-**Do not** use a folder named `data`.
-This folder is reserved by `hugo`.
-If you create a folder named `data` this will cause problems.
-
-For larger datasets, you'll need to create a new folder in the project root directory named `dataset-ignore`. This will be ignored by git (based off the `.gitignore` file in the project root directory) which will help you avoid issues with Github's size limits. Your team will have to manually make sure the data files in `dataset-ignore` are synced across team members.
-
-Your [load_and_clean_data.R](/load_and_clean_data.R) file is how you will load and clean your data. Here is a an example of a very simple one.
-
-```{r}
-source(
-  here::here("static", "load_and_clean_data.R"),
-  echo = TRUE # Use echo=FALSE or omit it to avoid code output  
-)
-```
-
-Note how I use the `here::here` function from the [`here` package](https://here.r-lib.org/articles/here.html) to avoid path problems.
-This function is used to specify directories within the project's root directory.
-You should never use absolute paths (eg. `/Users/danielsussman/path/to/project/` or `C:\\MA415\\Final_Project\\`) and using `here` ensures that it doesn't matter what the current working directory is as long as you have this RStudio Project open.
-
-----
-
-
-
-## Files in static
-
-### `load_and_clean_data.R`
-
-The idea behind this file is that someone coming to your website could largely replicate your analyses after running this script on the original data sets to clean them.
-This file might create a derivative data set that you then use for your subsequent analysis.
-Note that you don't need to run this script from every post/page.
-Instead, you can load in the results of this script, which could be plain text files or `.RData` files. In your data page you'll describe how these results were created. If you have a very large data set, you might save smaller data sets that you can use for exploration purposes.
-To link to this file, you can use `[cleaning script](/load_and_clean_data.R)`. 
-
-
-When you are loading in data, I recommend using the `here::here` function to specify the file path. This function is used to specify a path relative to your project's root directory. Hence, you can read a file using eg, `read_csv(here::here("dataset/data_file.csv"))`.
-
-
-### Shiny Interactive
-
-If you are using a shiny interactive, you'll need to keep that in a separate folder (i.e. not in `static` or `content`). For the shiny interactive you'll need to publish the app on `shinyapps.io` where the app can be run. When you publish, make sure to include any data sets you are loading in among the files you publish since those datasets will need to be loaded by your app. 
-
-
-
-
-
 ----
 
 ## Rubric: On this page
@@ -96,3 +24,169 @@ you will
   * Some repetition of what you do in your `load_and_clean_data.R` file is fine and encouraged if it helps explain what you did.
 * Organization, clarity, cleanliness of the page
   * Make sure to remove excessive warnings, use clean easy-to-read code (without side scrolling), organize with sections, use bullets and other organization tools, etc.
+
+
+## **Data source**
+
+* Global climate change has always been a heated topic worldwide. Since the Paris Climate Agreement was signed in 2015, major countries have taken action to cut CO2 emissions and to operate cleaner and greener. The United States, being the top emitter of CO2 in the world, is an effective representative for us to analyze how far we are in reaching the goal. Therefore, in this project, we will be looking at the CO2 emission trends of the United States in the period `2015 - 2019`. In particular, we will choose flight, agriculture, and vehicle industry as the focal factors in our study.
+
+
+## **Links to the original data sources (Airline):**
+
+* https://stats.oecd.org/Index.aspx?QueryId=105629#
+
+  * Attribution: OECD (The Organisation for Economic Co-operation and Development)
+
+**Data collection**
+
+* The second dataset is a record of CO2 emissions in the flight industry. `OECD` (The Organization for Economic Co-operation and Development) collects this data. This organization collects global data to work with governments and policymakers to solve problems facing society and the environment and to find solutions to these problems. Specifically, it provides the estimated CO2 emission data from 186 countries worldwide. 
+
+* The dataset includes four parts —— passenger, commercial, freight, and general aviation flight sectors. `ICAO` collected and provided the data source, and `OECD` estimated based on ICAO data. They used a database built by the `International Civil Aviation Organisation (ICAO)` as the source of their estimation. This `ICAO` database records the departure and arrival airports, the operating airline, and the type of aircraft used for each flight. From this information, coupled with the CO2 calculator provided by Eurocontrol, `OECD` was able to create an accurate estimation for CO2 emission vs. flights dataset. We use this dataset as the other indicating factor as we try to model the CO2 emission in the vehicle industry.
+  
+**Data cleaning**
+
+* First, according to the scope of the study determined by the group, we will focus on CO2 emissions in the United States. Using `filter()` and `values_drop_na` to narrow down and ignore NAs. We only research on time from 2015 - 2019. To clarify the dataset, I use `arrange()` to arrange data by time. In this way, we can see the trend of emissions by year. For the dataset I found, there are repeated columns with redundant information. Thus, I used `select()` to remove some irrelevant columns to our research topic. For the convenience of combining the three datasets we found, I `rename()` all of the titles of variables matching in the other two datasets. In order to match the number of columns between two datasets, I only keep the most important variable: `source of emissions`. I used `select()` to keep the variables I wanted. Finally, `ungroup()` ensures future data management. 
+
+```{r airline data cleaning}
+library(dplyr)
+library(tidyverse)
+air1 <- read_csv("AIRTRANS_CO2.csv", show_col_types = FALSE) %>% 
+  filter(LOCATION == "USA", values_drop_na = TRUE) %>% 
+  filter(Time > 2014 & Time < 2020) %>%
+  arrange(Time) %>% 
+  select(-POLLUTANT, -MEASURE, -FLIGHT, -FREQUENCY, -SOURCE, -SEASONALITY, -TIME, -`Flag Codes`, -Flags, -Pollutant, -LOCATION) %>%
+  rename(flight_type = `Flight type`, source_of_emissions = `Source of emissions`, Year = Time, Emission = Value, `Element(tonnes)` = Measure) %>%
+  rename(year = Year) %>%
+  select(-Frequency, -Seasonality) %>%
+  select(Country, year, source_of_emissions, Emission, `Element(tonnes)`) %>%
+  ungroup() 
+
+air1
+```
+
+**Variables explanation**
+
+* Domestic aviation: It is the domestic flights that takes place entirely in one country, which means the departure and arrival cities are all the in same country----U.S. CO2 is the largest component of aircraft emissions, accounting for approximately 70 percent of the exhaust.
+
+* International aviation:Flying to a different country is referred to as an international flight. It is made through international airports and keeps tourism and trade between countries alive at the same time.
+
+
+## **Links to the original data sources (Agriculture):**
+
+*  https://www.kaggle.com/datasets/ankitpranay/global-emissions-from-agriculture-and-forest-land?resource=download 
+
+  * Attribution: Ankit Pranay on Kaggle
+  
+**Data collection**
+
+* The Global emissions from agriculture and forest land is collected by the website Kaggle. This organization collects data to investigate the main contributions of increasing global greenhouse emissions and tries to solve the crux of environmental issues in the past few decades.
+
+
+* The FAOSTAT domain Emissions Totals summarize the `greenhouse gas (GHG) emissions` disseminated in the FAOSTAT     Climate Change Emissions domains, generated from agriculture and forest land. They consist of methane (CH4), nitrous oxide (N2O), and carbon dioxide (CO2) emissions from crop and livestock activities and forest management and include land use and land-use change processes. Data are computed at Tier 1 of the IPCC Guidelines for National greenhouse gas (GHG) Inventories.
+
+**Data cleaning**
+
+* After researching the factors that cause the increasing CO2 emissions, I found that `agriculture/land use` is one of the main contributors to CO2 emissions. Analyzing the data on agriculture helps to figure out the trend of CO2 emission. So I found the dataset about agriculture. 
+
+* After exploring the dataset, I first filtered out the region and time. We focus on the data from 2015 to 2019 in the United States for all three datasets. And then, I filtered the emission element, which is CO2 emission. In order to make three datasets uniform, I added a new column for the unit “tonnes” by using `mutate()`, so that it matches the other two datasets. Then I changed the emission values by multiplying 1000 to convert it to tonnes. I selected the columns I needed by `select()`. To make the dataset more organized and easy to read, I renamed several variables to make them coherent with the other two datasets. Since the original dataset is wide, I change the format of the dataset by using `pivot_longer`. So that the year becomes the rows and the whole table looks clear and concise.
+
+```{r agriculture data cleaning}
+library(dplyr)
+library(tidyverse)
+Agri <- read_csv("FAOSTAT.csv", show_col_types = FALSE) 
+
+Agri2 <- 
+  Agri %>% filter(Area == "United States of America") %>%
+  filter(str_detect(Element, "CO2eq")) %>%
+  mutate(unit = "tonnes") %>%
+  select(Area, Item, Element, unit, Y2015:Y2019) %>%
+  pivot_longer(c(Y2015:Y2019),
+               names_to = "year", values_to = "emission") %>%
+  mutate(total = emission * 1000) %>%
+  select(-emission) %>%
+  arrange(order(year)) %>%
+  group_by(year, Item, Area) %>%
+  summarize(sum_emission = sum(total, na.rm = TRUE, count = n()), Element) %>%
+  rename(Country = Area, Emission = sum_emission, source_of_emissions = Item, `Element(tonnes)` = Element) %>%
+  mutate(year = gsub("Y", "", year)) %>%
+  select(-Country) %>%
+  ungroup()
+Agri2
+
+```
+
+**Variables explanations**
+
+* The emission primarily alludes to `GHG(greenhouse gas)`, and while CO2 accounts for about 76 percent of total greenhouse gas emissions, we mainly focus on `CO2 emissions` in our project. The emission connects strictly with the conditions of climate, so it can be an important index to judge the climate situation. In our project, emission is a dependent variable that can be influenced by many independent variables that I will mention in the following.
+
+* AFOLU: AFOLU is abbreviation of Agriculture, Forestry and other land use. It can be considered as a sector that contributes to the emission.
+
+* farm-gate emission: Field to Farm Gate refers to the emissions caused by the act of growing a specific ingredient before any factory, processing, transportation, or distribution emissions.
+
+* Enteric Fermentation: It is a natural part of the digestive process in ruminant animals such as cattle, sheep, goats, and buffalo. Methane will produced by enteric fermentation as a by-product.
+
+* IPCC Agricultural: Intergovernmental panel on climate change.The following sectors are included: energy, industrial processes, agriculture, land-use change and forestry, and waste.
+
+* Emission on agricultural land: It refers to the share of land area that is arable, under permanent crops, and under permanent pastures.Most farm-related emissions come in the form of methane and nitrogenous oxide.
+Enteric Fermentation: It is a natural part of the digestive process in ruminant animals such as cattle, sheep, goats, and buffalo. Methane will produced by enteric fermentation as a by-product.
+
+
+## **Links to the original data sources (Vehicle):**
+
+* https://www.bts.gov/content/number-us-aircraft-vehicles-vessels-and-other-conveyances
+
+  * Attribution: Bureau of Transportation Statistics official website
+
+**Data collection**
+
+* The third dataset collects information about the number of U.S. Aircraft, Vehicles, Vessels, and Other Conveyances. It is found on the Bureau of Transportation Statistics official website. The reason why we use this dataset is because we want to find the relationship between the `total emissions` and the `vehicle number change` in the United States. We want to find how different types of vehicle are related to the emission amount. 
+
+
+**Data cleaning**
+
+* Since we had already combined emissions on Airplanes and Agriculture by rows, I used `filter()` to remove the Air carrier column. Also, we want to find the effect of vehicles on CO2 emissions; I used `filter()` to filter out the water vehicles. Thus, only Highway vehicles and Rail Transportation were kept in the dataset. The title of the types of vehicles is missing. I used `ls()` to list all of the variables' names, and then I `rename()` the title for the types of vehicles. Finally, the dataset is too wide, and years are all layout as variables. It will need to be clarified for future interpretation because the same observation cannot be across multiple columns. Thus, I used `pivot_longer()` to make the dataset longer rather than wide. As before, we `arrange()` years for straightforward interpretation. 
+
+```{r vehicle data cleaning}}
+vehi <- read_csv("Vehicle.csv", show_col_types = FALSE, skip = 1,
+                 col_types = cols(
+                   value = col_number()
+                 ))
+vehi1 <- vehi %>%
+  filter(!row_number() %in% c(1,2,3,23,24,27:95)) %>%
+  rename(source_of_emissions = ...1) %>%
+  select(source_of_emissions, "2015":"2019") %>%
+  pivot_longer(c("2015":"2019"), names_to = "year")%>%
+  arrange(year) %>% na.omit(vehi) %>% rename(type_of_cars = source_of_emissions)
+
+vehi1
+```
+
+
+**Variables explanation**
+
+* highway:It is a public or private road or other public way on land. Transportation on highway can produce a large amount of emission every year.
+
+* bus:It is a large motor vehicle carrying passengers by road. Bus is a public transportation tool that takes many people at the same time, so it improves energy efficiency. It produces less emissions compared with nonpublic transportation tools like cars. Buses can reduce carbon emissions by as much as 37 million metric tons per year
+Amtrak(passenger train car):It operates inter-city rail service in 46 of the 48 contiguous U.S. States. Passenger train car solely takes people. The emissions for rail were computed under the assumption that an Amtrak uses 2.2 gallons of fuel per mile, and the locomotives produce about 33.6 Kg of CO2e per mile.
+
+
+## **Code combined multiple data files**
+
+```{r combining two datasets}
+Agri_air <- rbind(Agri2, air1)
+Agri_air
+save(Agri2, air1, file = "Agri_air.csv")
+```
+
+
+```{r combine three datasets}
+Agri_air_car <- left_join(Agri_air, vehi1, by = "year")
+Agri_air_car
+save(Agri2, air1, vehi1, file = "Agri_air_car.RData")
+save(Agri2, air1, vehi1, file = "Agri_air_car.csv")
+```
+
+
+  
+  
+  

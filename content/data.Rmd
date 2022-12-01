@@ -3,7 +3,7 @@ title: Data
 description:
 toc: true
 featuredVideo:
-featuredImage: images/data page.png
+featuredImage: images/Data science.jpeg
 draft: false
 ---
 ----

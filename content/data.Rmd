@@ -21,7 +21,7 @@ draft: false
 
 **Data collection**
 
-* The second dataset is a record of CO2 emissions in the flight industry. `OECD` (The Organization for Economic Co-operation and Development) collects this data. This organization collects global data to work with governments and policymakers to solve problems facing society and the environment and to find solutions to these problems. Specifically, it provides the estimated CO2 emission data from 186 countries worldwide. 
+* The first dataset is a record of CO2 emissions in the flight industry. `OECD` (The Organization for Economic Co-operation and Development) collects this data. This organization collects global data to work with governments and policymakers to solve problems facing society and the environment and to find solutions to these problems. Specifically, it provides the estimated CO2 emission data from 186 countries worldwide. 
 
 * The dataset includes four parts —— passenger, commercial, freight, and general aviation flight sectors. `ICAO` collected and provided the data source, and `OECD` estimated based on ICAO data. They used a database built by the `International Civil Aviation Organisation (ICAO)` as the source of their estimation. This `ICAO` database records the departure and arrival airports, the operating airline, and the type of aircraft used for each flight. From this information, coupled with the CO2 calculator provided by Eurocontrol, `OECD` was able to create an accurate estimation for CO2 emission vs. flights dataset. We use this dataset as the other indicating factor as we try to model the CO2 emission in the vehicle industry.
   
@@ -30,22 +30,7 @@ draft: false
 * First, according to the scope of the study determined by the group, we will focus on CO2 emissions in the United States. Using `filter()` and `values_drop_na` to narrow down and ignore NAs. We only research on time from 2015 - 2019. To clarify the dataset, I use `arrange()` to arrange data by time. In this way, we can see the trend of emissions by year. For the dataset I found, there are repeated columns with redundant information. Thus, I used `select()` to remove some irrelevant columns to our research topic. For the convenience of combining the three datasets we found, I `rename()` all of the titles of variables matching in the other two datasets. In order to match the number of columns between two datasets, I only keep the most important variable: `source of emissions`. I used `select()` to keep the variables I wanted. Finally, `ungroup()` ensures future data management. 
 
 
-```{r airline data cleaning}
-library(dplyr)
-library(tidyverse)
-air1 <- read_csv("AIRTRANS_CO2.csv", show_col_types = FALSE) %>% 
-  filter(LOCATION == "USA", values_drop_na = TRUE) %>% 
-  filter(Time > 2014 & Time < 2020) %>%
-  arrange(Time) %>% 
-  select(-POLLUTANT, -MEASURE, -FLIGHT, -FREQUENCY, -SOURCE, -SEASONALITY, -TIME, -`Flag Codes`, -Flags, -Pollutant, -LOCATION) %>%
-  rename(flight_type = `Flight type`, source_of_emissions = `Source of emissions`, Year = Time, Emission = Value, `Element(tonnes)` = Measure) %>%
-  rename(year = Year) %>%
-  select(-Frequency, -Seasonality) %>%
-  select(Country, year, source_of_emissions, Emission, `Element(tonnes)`) %>%
-  ungroup() 
-
-air1
-```
+install.packages("kableExtra")
 
 \newline
 
@@ -64,42 +49,18 @@ air1
   
 **Data collection**
 
-* The Global emissions from agriculture and forest land is collected by the website Kaggle. This organization collects data to investigate the main contributions of increasing global greenhouse emissions and tries to solve the crux of environmental issues in the past few decades.
+* The second dataset Global emissions from agriculture and forest land are collected by the organization FAOSTAT. This organization provides free access to food and agriculture statistics for over 245 countries and covers all FAO original groupings from 1961 to the most recent year available. In this dataset, FAOSTAT collects data to investigate the main contributions of increasing global greenhouse emissions and tries to solve the crux of environmental issues in the past few decades.
 
 
 * The FAOSTAT domain Emissions Totals summarize the `greenhouse gas (GHG) emissions` disseminated in the FAOSTAT     Climate Change Emissions domains, generated from agriculture and forest land. They consist of methane (CH4), nitrous oxide (N2O), and carbon dioxide (CO2) emissions from crop and livestock activities and forest management and include land use and land-use change processes. Data are computed at Tier 1 of the IPCC Guidelines for National greenhouse gas (GHG) Inventories.
 
 **Data cleaning**
 
+* Link: [load_and_clean_data.R](/load_and_clean_data.R)
+
 * After researching the factors that cause the increasing CO2 emissions, I found that `agriculture/land use` is one of the main contributors to CO2 emissions. Analyzing the data on agriculture helps to figure out the trend of CO2 emission. So I found the dataset about agriculture. 
 
 * After exploring the dataset, I first filtered out the region and time. We focus on the data from 2015 to 2019 in the United States for all three datasets. And then, I filtered the emission element, which is CO2 emission. In order to make three datasets uniform, I added a new column for the unit “tonnes” by using `mutate()`, so that it matches the other two datasets. Then I changed the emission values by multiplying 1000 to convert it to tonnes. I selected the columns I needed by `select()`. To make the dataset more organized and easy to read, I renamed several variables to make them coherent with the other two datasets. Since the original dataset is wide, I change the format of the dataset by using `pivot_longer`. So that the year becomes the rows and the whole table looks clear and concise.
-
-
-```{r agriculture data cleaning}
-library(dplyr)
-library(tidyverse)
-Agri <- read_csv("FAOSTAT.csv", show_col_types = FALSE) 
-
-Agri2 <- 
-  Agri %>% filter(Area == "United States of America") %>%
-  filter(str_detect(Element, "CO2eq")) %>%
-  mutate(unit = "tonnes") %>%
-  select(Area, Item, Element, unit, Y2015:Y2019) %>%
-  pivot_longer(c(Y2015:Y2019),
-               names_to = "year", values_to = "emission") %>%
-  mutate(total = emission * 1000) %>%
-  select(-emission) %>%
-  arrange(order(year)) %>%
-  group_by(year, Item, Area) %>%
-  summarize(sum_emission = sum(total, na.rm = TRUE, count = n()), Element) %>%
-  rename(Country = Area, Emission = sum_emission, source_of_emissions = Item, `Element(tonnes)` = Element) %>%
-  mutate(year = gsub("Y", "", year)) %>%
-  select(-Country) %>%
-  ungroup()
-Agri2
-
-```
 
 \newline
 
@@ -135,23 +96,6 @@ Enteric Fermentation: It is a natural part of the digestive process in ruminant 
 
 * Since we had already combined emissions on Airplanes and Agriculture by rows, I used `filter()` to remove the Air carrier column. Also, we want to find the effect of vehicles on CO2 emissions; I used `filter()` to filter out the water vehicles. Thus, only Highway vehicles and Rail Transportation were kept in the dataset. The title of the types of vehicles is missing. I used `ls()` to list all of the variables' names, and then I `rename()` the title for the types of vehicles. Finally, the dataset is too wide, and years are all layout as variables. It will need to be clarified for future interpretation because the same observation cannot be across multiple columns. Thus, I used `pivot_longer()` to make the dataset longer rather than wide. As before, we `arrange()` years for straightforward interpretation. 
 
-
-```{r vehicle data cleaning}}
-library(dplyr)
-library(tidyverse)
-vehi <- read_csv("Vehicle.csv", show_col_types = FALSE, skip = 1,
-                 col_types = cols(
-                   value = col_number()
-                 ))
-vehi1 <- vehi %>%
-  filter(!row_number() %in% c(1,2,3,23,24,27:95)) %>%
-  rename(source_of_emissions = ...1) %>%
-  select(source_of_emissions, "2015":"2019") %>%
-  pivot_longer(c("2015":"2019"), names_to = "year")%>%
-  arrange(year) %>% na.omit(vehi) %>% rename(type_of_cars = source_of_emissions)
-
-vehi1
-```
 \newline
 
 **Variables explanation**
@@ -162,20 +106,7 @@ vehi1
 Amtrak(passenger train car):It operates inter-city rail service in 46 of the 48 contiguous U.S. States. Passenger train car solely takes people. The emissions for rail were computed under the assumption that an Amtrak uses 2.2 gallons of fuel per mile, and the locomotives produce about 33.6 Kg of CO2e per mile.
 
 
-## **Code combined multiple data files**
+## **Code combined multiple data files:**
 
-```{r combining two datasets}
-Agri_air <- rbind(Agri2, air1)
-Agri_air
-save(Agri2, air1, file = "Agri_air.csv")
-```
-
-
-```{r combine three datasets}
-Agri_air_car <- left_join(Agri_air, vehi1, by = "year")
-Agri_air_car
-save(Agri2, air1, vehi1, file = "Agri_air_car.RData")
-save(Agri2, air1, vehi1, file = "Agri_air_car.csv")
-```
-
+* In this project, we combined the three datasets (Agriculture, airline, car) by `left_join` and organized them by years. We combined the same columns of the three datasets so that we could analyze and compare the number/content in one dataset.
   

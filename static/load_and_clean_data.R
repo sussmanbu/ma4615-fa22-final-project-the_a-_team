@@ -37,7 +37,7 @@ air1 %>%
   
 ## select out five columns needed to append with another dataset
 air1 %>%  
-  select(Country, year, source_of_emissions, Emission, `Element(tonnes)`) 
+  mutate(Country, year, source_of_emissions, Emission, `Element(tonnes)`) 
 
 ## store the data after we do all of data-cleaning
 write_csv(air1, file = here::here("dataset", "air_clean.csv"))
@@ -77,6 +77,7 @@ write_csv(Agri2, file = here::here("dataset", "Agri_clean.csv"))
 
 ## Combine first two datasets
 Agri_air <- rbind(Agri2, air1)
+Agri_air
 write_csv(Agri_air, file = here::here("dataset", "Agri_air_clean.csv"))
 
 ## third dataset:
@@ -112,4 +113,8 @@ vehi1 <- vehi1 %>%
   rename(type_of_cars = source_of_emissions)
 write_csv(vehi1, file = here::here("dataset", "vehi_clean.csv"))
 
-
+## Combine three datasets
+Agri_air_car <- left_join(Agri_air, vehi1, by = "year")
+Agri_air_car
+knitr::kable(head(Agri2[, 1:5]), caption = "The CO2 emissions in combined airlines, agriculture, and vehicles in United States.", "simple")
+write_csv(Agri_air_car, file = here::here("dataset", "Agri_air_clean.csv"))

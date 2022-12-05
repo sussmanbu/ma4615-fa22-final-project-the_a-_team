@@ -242,16 +242,35 @@ yes
 <ul>
 <li>Since we had already combined emissions on Airplanes and Agriculture by rows, I used <code>filter()</code> to remove the Air carrier column. Also, we want to find the effect of vehicles on CO2 emissions; I used <code>filter()</code> to filter out the water vehicles. Thus, only Highway vehicles and Rail Transportation were kept in the dataset. The title of the types of vehicles is missing. I used <code>ls()</code> to list all of the variables’ names, and then I <code>rename()</code> the title for the types of vehicles. Finally, the dataset is too wide, and years are all layout as variables. It will need to be clarified for future interpretation because the same observation cannot be across multiple columns. Thus, I used <code>pivot_longer()</code> to make the dataset longer rather than wide. As before, we <code>arrange()</code> years for straightforward interpretation.</li>
 </ul>
-<p><strong>Variables explanation</strong></p>
+</div>
+<div id="code-combined-two-data-sets" class="section level2">
+<h2><strong>Code combined two data sets:</strong></h2>
 <ul>
-<li><p><strong>highway</strong>: It is a public or private road or other public way on land. Transportation on highway can produce a large amount of emission every year.</p></li>
-<li><p><strong>bus</strong>: It is a large motor vehicle carrying passengers by road. Bus is a public transportation tool that takes many people at the same time, so it improves energy efficiency. It produces less emissions compared with nonpublic transportation tools like cars. Buses can reduce carbon emissions by as much as 37 million metric tons per year Amtrak(passenger train car):It operates inter-city rail service in 46 of the 48 contiguous U.S. States. Passenger train car solely takes people. The emissions for rail were computed under the assumption that an Amtrak uses 2.2 gallons of fuel per mile, and the locomotives produce about 33.6 Kg of CO2e per mile.</p></li>
+<li>Because we are interested in causing different aspects of CO2 emissions, and because the row numbers of two datasets are not the same, <code>left_join()</code> the two data is meaningless. Therefore, we decided to make the column numbers and titles of the two data the same before <code>rbind()</code> the two datasets.</li>
 </ul>
 </div>
-<div id="code-combined-multiple-data-files" class="section level2">
-<h2><strong>Code combined multiple data files:</strong></h2>
+<div id="variables-explanation-for-two-datasets" class="section level2">
+<h2><strong>Variables explanation for two datasets</strong></h2>
+<p>The data sets we select are data from agriculture, flights and vehicles. We want to examine their influence to the <code>emission</code> situation. The size of raw data is too broad to focus, so we clean the data and specifically focus on data of emissions from 2010-2019 in the U.S. to discover a trend. For the first combined data file, we combine data of agriculture and flights. Considering variables in terms of columns, we have 5 variables. They are <code>country</code>, <code>year</code>, <code>source_of_emissions</code>, <code>Emission</code>, <code>Element(tonnes)</code>.</p>
 <ul>
-<li>In this project, we combined the three datasets (Agriculture, airline, car) by <code>left_join</code> and organized them by years. We combined the same columns of the three datasets so that we could analyze and compare the number/content in one dataset.</li>
+<li><p>country: A <code>country</code> means a nation. While we use <code>country</code> to limit our search to a certain area, the only country we examine here is the United States of America.</p></li>
+<li><p>year: A <code>year</code> is a period of 365 days. We use variable <code>year</code> to focus our search on a certain time range. We choose data from 2010 to 2019 to examine the trend, so <code>year</code> include 2010, 2011, 2012….2019.</p></li>
+<li><p>source_of_emissions: <code>source_of_emissions</code> tells us what kinds of source in agriculture and flight can generate emissions. There are many types of <code>source_of_emissions</code> in the column, including AFOLU, emission on agricultural land, Enteric Fermentation, Domestic Aviation, International aviation and so on.</p></li>
+<li><p>Emission: <code>Emission</code> means the production and discharge of somethings, and we examine the discharge of gas here. The column of <code>Emission</code> tells us how many emissions of gas will be created under the influence of factors such as <code>source_of_emissions</code> in a certain <code>year</code> in United States of America.</p></li>
+<li><p>Element(tonnes): <code>Element(tonnes)</code> tells us what elements constitute emissions. Specifically, it tells us what is the component of the emission. If we look at the rows of the first combined data file, we can find there are 1106 rows of samples. Every row displays the data of emissions of different sources of emission in each year from 2010-2019 in United States of America and its corresponding components(elements) of emissions.</p></li>
+</ul>
+</div>
+<div id="code-combined-three-data-sets" class="section level2">
+<h2><strong>Code combined three data sets:</strong></h2>
+<ul>
+<li>we combined the three datasets (Agriculture, airline, car) by <code>left_join</code> and organized them by years. We combined the same columns of the three datasets so that we could analyze and compare the number/content in one dataset.</li>
+</ul>
+<p><strong>Variables explanation for three datasets</strong></p>
+<p>For the second combined data file, we combine data of agriculture, flights, and vehicles together. Then there are more variables in this combined data file. 7 variables are included in this data file, and they are <code>country</code>, <code>year</code>, <code>source_of_emissions</code>, <code>Emission</code>, <code>Element(tonnes)</code>, <code>type_of_cars</code>, and <code>value</code>. To examine variables in term of columns, the second combined data file has 5 same variables with those of the first combined data file. So, I will focus on explaining <code>type_of_cars</code> and <code>value</code> here.</p>
+<ul>
+<li><p>type_of_cars：<code>type_of_cars</code> tries to show what types of cars are creating emissions and pollute the United States of America in each year. <code>type_of_cars</code> include Trolley bus, Commuter rail cars and locomotives, and Amtrak, locomotives…</p></li>
+<li><p>value: The meaning of <code>value</code> here indicates the number of <code>type_of_cars</code> for each corresponding <code>type_of_cars</code> in each year.</p></li>
+<li><p>If we focus on the rows of this second combined data file, we can find there are 19,908 rows of samples, each exhibiting data of sources of emission, emission, corresponding element of emission, type of cars, and number of cars in each year from 2010-2019 in United States of America.</p></li>
 </ul>
 </div>
 

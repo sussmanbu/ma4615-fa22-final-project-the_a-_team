@@ -17,28 +17,32 @@ save(loan_data_clean, file = here::here("dataset/loan_refusal.RData"))
 
 
 ## check if there is problems in the dataset
-air1 <- read_csv("dataset/AIRTRANS_CO2.csv", show_col_types = FALSE) 
+air1 <- read_csv("dataset/AIRTRANS_CO2.csv", show_col_types = FALSE,
+                 col_types = cols(
+                   Time = col_character()
+                 ))
 problems(air1)
 
 ## filter out the years and country range we want
-air1 %>%  
+air1 <- air1 %>%  
   filter(LOCATION == "USA", values_drop_na = TRUE) %>% 
   filter(Time > 2009 & Time < 2020)
 
 ## rearrange years to make the trend clearer
 ## select out all columns we do not need
 ## rename columns to make them match among datasets
-air1 %>%
+air1 <- air1 %>%
   arrange(Time) %>% 
   select(-POLLUTANT, -MEASURE, -FLIGHT, -FREQUENCY, -SOURCE, -SEASONALITY, -TIME, -`Flag Codes`, -Flags, -Pollutant, -LOCATION) %>%
   rename(flight_type = `Flight type`, source_of_emissions = `Source of emissions`, Year = Time, Emission = Value, `Element(tonnes)` = Measure) %>%
   rename(year = Year) %>%
-  select(-Frequency, -Seasonality)
-  
-## select out five columns needed to append with another dataset
-air1 %>%  
-  mutate(Country, year, source_of_emissions, Emission, `Element(tonnes)`) 
+  select(-Frequency, -Seasonality, -flight_type)
 
+col_order <- c("Country", "year", "source_of_emissions",
+                  "Emission", "Element(tonnes)")
+air1 <- air1[, col_order]
+
+air1
 ## store the data after we do all of data-cleaning
 write_csv(air1, file = here::here("dataset", "air_clean.csv"))
 

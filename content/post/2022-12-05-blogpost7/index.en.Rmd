@@ -1,0 +1,43 @@
+---
+title: blogpost7
+author: The_A+_team
+date: '2022-12-05'
+slug: []
+categories: []
+tags: []
+description: ~
+toc: yes
+authors: []
+series: []
+lastmod: '2022-12-05T09:52:17-05:00'
+featuredVideo: ~
+featuredImage: ~
+---
+
+1) How are you continuing your exploratory data analysis?
+
+* Our previous research only focus on five-year time period. So it's diffuclt to see the obvious trend. As a result, we expand our datasets to ten-year range. But the airline dataset only has the data from 2014. So we still need to figure out how to explain the descrepancy of the datasets. Then, we are going to analyze the combined dataset of agriculture and airline. 
+
+* After we do the analysis on the relationship between agriculture, airline, and CO2 emission. We found that in some years the correlation was very weak. In order to make our data more convincing and thorough, we are going to incorporate new datasets into the previous research. After doing research, we think that GDP is a crucial indicator to influence the emission. The GDP dataset also includes the data of the US. population. So we choose to investigate the relationship between the GDP, population, and total emission. 
+
+* However, we only have the separate datasets of CO2 emission for agriculture sector and airline sector. So we still need a total emission datasets. We found the total emission dataset online and make a regression model based on these two datasets. 
+
+```{r regression model, message = FALSE}
+library(here)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+gdp_emission <- read_csv(here::here("dataset", "gdp_emission_clean.csv"), show_col_types = FALSE)
+model <- lm(emission ~ population, data = gdp_emission)
+plot(emission ~ population, data=gdp_emission)
+abline(lm(emission ~ population, data=gdp_emission), col = "red")
+summary(model)
+```
+
+* From the regression model, we observed that the GDP experienced a striking decrease in 2010 and soon recovered from the plunge. It increased after 2010 and gradually reached the peak. It might be an effective factor which influences the trend of emission.
+
+* After adding the new dataset, we are going to relate the trend of GDP to the trend of total emission. In the future research, we will try to combine the new and old datasets together instead of only analyzing the dataset separately. Also, we will try more types of EDA graphs to show the relationship between these factors and emission. And we will filter in new trends in the original datasets.
+
+2) What is your tentative thesis?
+
+* Thesis: CO2 emissions have increased significantly in the last decade, especially on agricultural land, in the number of cars and in airlines.

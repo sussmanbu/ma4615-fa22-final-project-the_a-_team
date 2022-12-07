@@ -6,6 +6,35 @@ featuredVideo:
 featuredImage: https://upload.wikimedia.org/wikipedia/commons/7/77/Pebbleswithquarzite.jpg
 draft: false
 ---
+Analysis Page：
+
+## **Motivation: **
+
+For decades, climate change has been a heated topic worldwide. While we all have heard some information about climate change and global warming, it seems a broad and far-away question. Is global warming a real thing? And, if it is, what part of it are we playing, and how are we impacted? Moreover, how can we change if the object is enormous compared to our effort? As we dive into the topic of climate change, trying to answer these questions, we find that almost everything essential to human lives relies closely on the climate ——air, water, food, energy, etc., yet we are neglecting it. Our group felt intrigued and responsible for investigating the relationship between human activities and climate change. Specifically, in our analysis, we inspect the aspects of our daily life as factors that impact the major contributor to climate change, CO2 emission. 
+We chose the United States as our country of focus and the primary time scope from 2010 to 2019. Through our analysis, we aim to answer the following questions: 1. What is the trend of CO2 emissions, and has it changed through the years? 2. How are we impacting CO2 emissions in our daily life, and to what extent? 3. Is CO2 emission inevitably accompanied by GDP growth and industry development? 4. Can we form any suggestions for heading towards a greener world?
+
+## **Breadth and Depth: **
+
+In our analysis, four related datasets are used as variables in explaining the relation of CO2 emissions:
+Air-transportation emissions
+Agricultural emissions
+Vehicle numbers in the United States
+The GDP of the United States
+Our goal was to filter out the most significant contributors in each dataset and model the total CO2 emission in the United States. Despite this regression model, we also examined each dataset separately regarding its trend and correlation with the total emission during our exploration. In each section, we provide graphs and explanations as an assistant for audience interpretation.
+
+
+Section 1: Air emission
+
+Section 2: Agriculture emission
+
+Section 3: Vehicles
+
+Section 4: GDP and Population
+
+Section 5: regression model of CO2 emission
+
+
+## **Modeling and inference**
 
 ```{r EDA_top10, message = FALSE}
 library(here)
@@ -125,4 +154,19 @@ ggplot(data = vehicle_gdp_emission, mapping = aes(x = population, y = emission))
 ## **Analysis for EDA (population and emission): **
 
 * As you can see from the graph, CO2 emissions increased with population growth until 2010. From 2010 to 2013, there was a significant decrease in CO2 emissions, which may be related to the US government's control of greenhouse gases. After 2013, greenhouse gases are on the rise again.
+
+
+## **Conclusion: **
+Overall, we see a sharp increase in CO2 emissions each year. Although multiple factors, as well as CO2 emission, showed fluctuation around 2008-2013, they exhibit the same increasing trend in the big picture. This fluctuation could be a result of the financial crisis in 2008, which induced a decrease in production and consumption that could cause significant emissions of CO2. GDP and population showed a positive relationship to CO2 emission. The correlation between vehicles and CO2 weakened after 2009, possibly because more vehicles are hybrid or electric only. By analyzing the agriculture and air transportation emissions combined, we showed forest fire repeatedly occurs as a top contributor to CO2 emissions. It is worth thinking about how we could change the way we farm and cultivate.
+
+
+## **Limitations: **
+
+Initially, our group chose only the first three datasets as the object of our analysis. Those datasets only contain limited information, such as the type of emitter and the amount of its emission. Although we have found two more datasets to compensate for insufficient resources, as the variables are primarily qualitative, we have trouble constructing our final regression model. In addition, the timeline of our analysis is mainly from 2010 to 2019, as some datasets are only dated after 2010. Since we want the model to be more precise, we decided to shorten the time scope as a whole and analyzed vehicle and GDP further back in its section.
+Moreover, a considerable number of contributors to CO2 emissions exist, and our analysis only touched a little. These datasets are chosen based on our question of interest around daily life, and they probably are not the best to describe the CO2 emission trend. In the future, we could deepen our study by selecting different sectors of human activity and analyzing the impact to provide a more comprehensive model.
+
+
+## **Clarity: **
+
+In order to guide the audience and deliver clear information, we divided our analysis into five parts. The first four parts contained the analysis of a specific dataset and its correlation to the total CO2 emission. We include a brief introduction to the dataset as well as the reasoning for being a related variable. Then, we created different graphs that suited the need for interpretation. Each chart is designed with a title and labeled axis, with coloring to help distinguish differences. The result of the analysis and interpretation of the graphs are provided to ensure the audience’s precise understanding. For our final regression model, we offer both the complete model and the conclusion of the results. We will explain the step-by-step progress of our modeling so the audience can follow our reasoning.
 

@@ -36,8 +36,9 @@ air1 <- air1 %>%
   select(-POLLUTANT, -MEASURE, -FLIGHT, -FREQUENCY, -SOURCE, -SEASONALITY, -TIME, -`Flag Codes`, -Flags, -Pollutant, -LOCATION) %>%
   rename(flight_type = `Flight type`, source_of_emissions = `Source of emissions`, Year = Time, Emission = Value, `Element(tonnes)` = Measure) %>%
   rename(year = Year) %>%
-  select(-Frequency, -Seasonality, -flight_type)
+  select(-Frequency, -Seasonality, -flight_type) %>% filter(source_of_emissions == "Domestic aviation: (A)+(C)", source_of_emissions == "Domestic aviation (memo item): (D)+(G)")
 
+## reorder the variables for data combining
 col_order <- c("Country", "year", "source_of_emissions",
                   "Emission", "Element(tonnes)")
 air1 <- air1[, col_order]
@@ -51,7 +52,7 @@ knitr::kable(head(air1[, 1:5]), caption = "The CO2 emissions in airlines in Unit
 
 #Load_data_clean
 ## Check if there is problems in the dataset
-Agri <- read_csv("dataset/FAOSTAT.csv", show_col_types = FALSE)  
+Agri <- read_csv("dataset/FAOSTAT.csv", show_col_types = FALSE) 
 problems(Agri)
 
 # CLEAN the data (second dataset)
@@ -101,7 +102,7 @@ problems(vehi)
 ## filter out some types of vehicles we do not focus on
 ## assign a new name to a column that didn't have a name
 vehi1 <- vehi %>%
-  filter(!row_number() %in% c(1,2,3,23,24,27:95)) %>%
+  filter(!row_number() %in% c(23,24,27:95)) %>%
   rename(source_of_emissions = ...1)
 
 ## select out the years we want to do research
@@ -115,6 +116,7 @@ vehi1 <- vehi1 %>%
 vehi1 <- vehi1 %>% 
   na.omit(vehi) %>% 
   rename(type_of_cars = source_of_emissions)
+vehi1
 write_csv(vehi1, file = here::here("dataset", "vehi_clean.csv"))
 
 ## Combine three datasets

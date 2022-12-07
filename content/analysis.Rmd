@@ -7,63 +7,122 @@ featuredImage: https://upload.wikimedia.org/wikipedia/commons/7/77/Pebbleswithqu
 draft: false
 ---
 
-This comes from the file `content/analysis.Rmd`.
+```{r EDA_top10, message = FALSE}
+library(here)
+library(tidyverse)
+library(dplyr)
+Agri_air <- read_csv(here::here("dataset", "Agri_air_clean.csv"), show_col_types = FALSE)
+Agri_air2 <- Agri_air %>%
+  group_by(source_of_emissions) %>%
+  count(n1 = Emission) %>%
+  mutate(prop = n1/sum(n1)) %>%
+  arrange(desc(prop))%>%
+  head(31)%>%
+  select(-n1)
 
-We describe here our detailed data analysis.
+
+Agri_air_box <- Agri_air2 %>%
+  count(n2 = prop) %>%
+  ggplot() +
+  geom_bar(aes(x = source_of_emissions))+
+  coord_flip()
+Agri_air_box
+
+```
+
+## **Analysis for EDA (top 10 airline + agriculture emissions): **
+
+* top10: Before we did the separate analysis regarding to each dataset, we use the boxplot to generate the top 10 source of emissions which contribute to the CO2 emission most. We combined the agriculture and airline data together and concluded the ten sources, which is shown on the graph.
+
+
+```{r EDA_air_trend}
+air1 <- read_csv(here::here("dataset", "air_clean.csv"), show_col_types = FALSE)
+
+air2 <- air1 %>%
+  group_by(source_of_emissions) %>%
+  count(n1 = Emission) %>%
+  mutate(prop = n1/sum(n1)) %>%
+  arrange(desc(prop))%>%
+  head(30)%>%
+  select(-n1)
+  
+air_line <- air1 %>%
+  select(year, source_of_emissions, Emission)%>%
+filter(source_of_emissions == "(B) - Domestic flight outside of country A, operated by a resident airline of country A" | source_of_emissions == "(F) - International flight outside of country A, operated by a resident airline of country A" | source_of_emissions == "(E) - International flight arriving in country A, operated by a resident airline of country A" | source_of_emissions == "Domestic aviation: (A)+(C)" | source_of_emissions == "Air transport - Industry H51 (ISIC rev.4): (A)+(B)+(D)+(E)+(F)" ) %>%
+  ggplot() + geom_point(aes(year, Emission, color = source_of_emissions))
+air_line
+```
+
+## **Analysis for EDA (top two airline emissions): **
+
+* air_trend: Firstly, I calculated the proportion of the source of emissions in the airline industry and chose the top five elements which contribute most to the emission of CO2 between 2014 and 2019. I did that by using the code 'count()', 'arrange()', and 'head()'. Then, I use the top five elements to plot the relationship between the element and total emission. Surprisingly, I found that there was an obvious increase during 2018 for all these elements. We assume that the airline industry may contribute a larger proportion in 2018 than we previously assumed.
+
+
+
+```{r EDA_agri_trend}
+Agri_air2 <- Agri_air %>%
+  select(year, source_of_emissions, Emission) %>%
+filter(source_of_emissions == "Net Forest conversion" | source_of_emissions == "Forest fires" | source_of_emissions == "IPCC Agriculture" | 
+               source_of_emissions == "AFOLU" | source_of_emissions == "Emissions on agricultural land" ) %>% group_by(source_of_emissions)
+
+ggplot(Agri_air2, aes(x=year, y=Emission))+
+  geom_point(aes(color=source_of_emissions),size=1)+stat_smooth(aes(group=source_of_emissions),color='black',alpha=0.5, geom='line')
+
+```
+
+## **Analysis for EDA (Agricultral elements trend): **
+
+* In this graph, as the numbers of source_of_emissions are too many to conclude in a single graph, we choose five representative ones that can reflect the general trend. Refer to Agricultural Guidance, AFOLU is responsible to approximately 25% of anthropogenic GHG emissions.Besides, Emissions on agricultural land, Forest fires, IPCC Agriculture, and Net Forest conversion are most important sectors in agriculture, so we use them to represent source_of_emissions. According to the graph, we can see the emission of every source_of_emissions increases from 2010-2019. Although the rate of increase fluctuates during these years, we can still see the negative influence of these source_of_emissions influence our climate. They negatively inluences our climate by contributing to the increases of our emissions.
 
 
 ```{r}
-library(tidyverse)
-print(getwd())
-data <- read_csv(here::here("dataset/loan_refusal_clean.csv"))
-load(here::here("dataset/loan_refusal.RData"))
-print(ls())
+vehi2 <- read_csv(here::here("dataset", "vehi_clean.csv"), show_col_types = FALSE)
+ggplot(vehi2, aes(year,value, color = type_of_cars)) + 
+  geom_line() +
+  geom_point()
 ```
 
-## Note on Attribution
+## **Analysis for EDA (number of cars along years): **
 
-If you are directly quoting from a source, please make that clear. You can show quotes using `>` like this
+* Our group combines the data from 2010 to 2019, but for the overall vehicle change trend, it will be better to view in a longer period of time, so in this graph, we select the data from 1994-2019. We use geom_point() to make a scatterplot for all the vehicles (expect air vehicles). Then using geom_line() to connect the points of same vehicle together to see the trend. Some vehicles such as Truck and bus has unstable changes over years, but the overall trend of vehicles is increasing during 1994 to 2019, we hope the result has relationship with the emission amount during 1994 to 2019. 
+
+
+```{r}
+total_vehicle <- read_csv(here::here("dataset", "total_vehicle_clean.csv"), show_col_types = FALSE)
+
+total_vehicle %>%
+  ggplot(aes(year,value, size = emission, color= emission)) +geom_point(aes(color = emission)) + scale_colour_gradient(low = "orange", high = "blue") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
+## **Analysis for EDA (number of cars along years based on emissions): **
+
+* During 1994 to 2008, the emission has the same tendency with the number of vehicle emissions. As number of vehicles increased, the emission amount also increased. However, after 2008, the emission decreased for few years and the number of cars decreased in 2009, and then increased in 2011. so conclusion is the correlation between emissiona and number of vehicles is strong during 1994 to 2008, but it became weak during 2009-2019.
+
+
+```{r regression model}
+gdp_emission <- read_csv(here::here("dataset", "gdp_emission_clean.csv"), show_col_types = FALSE)
+library(ggplot2)
+
+model <- lm(log(emission) ~ log(gdp_total), data = gdp_emission)
+plot(log(emission) ~ log(gdp_total), data=gdp_emission)
+abline(lm(log(emission) ~ log(gdp_total), data=gdp_emission), col = "red")
+summary(model)
 
 ```
-> To be or not to be.
+
+
+## **Analysis for regression (total GDP and emission): **
+
+* There is a non-linear relationship between log of emissions and log of total GDP. As log of GDP increases, log of emissions also increases. Also, the summary of the model shows the p-value of the linear regression is smaller than 0.05.
+
+```{r}
+vehicle_gdp_emission <- read_csv(here::here("dataset", "vehicle_gdp_emission_clean.csv"), show_col_types = FALSE)
+ggplot(data = vehicle_gdp_emission, mapping = aes(x = population, y = emission)) +
+    geom_point(alpha = 0.1, aes(color = year))
 ```
 
-> To be or not to be.
+## **Analysis for EDA (population and emission): **
 
-Also, make sure to provide a link or citation to where you are quoting from.
+* As you can see from the graph, CO2 emissions increased with population growth until 2010. From 2010 to 2013, there was a significant decrease in CO2 emissions, which may be related to the US government's control of greenhouse gases. After 2013, greenhouse gases are on the rise again.
 
--------
-
-
-## Rubric: On this page
-
-you will
-
-
-* Introduce what motivates your Data Analysis (DA)
-  * Which variables and relationships are you most interested in?
-  * What questions are you interested in answering?
-* Breadth of the DA
-  * Make sure that you ask enough initial questions to explore the different variables in your data.
-  * i.e. Do you explore more than just one or two variables? Do you explore a few different relationships or many?
-* Depth of the DA
-  * When you answer one question, usually more questions arise as well. 
-  * The depth of the DA is about coming up with and exploring the answers to these questions, often iterating the process a few times.
-* Modeling and Inference 
-  * You should also include some kind of formal statistical model and/or inference. This could be a linear regression, logistic regression, hypothesis testing etc.
-  * Explain the techniques you used for validating your results.
-  * Describe the results of your modelling and make sure to give a sense of the uncertainty in your estimates and conclusions.
-* Explain the flaws and limitations of your analysis
-  * Are there some assumptions that you needed to make that might not hold? Is there other data that would help to answer your questions? ...
-* Clarity Figures
-  * Are your figures/tables/results easy to read, informative, without problems like overplotting, hard-to-read labels, etc?
-  * Each figure should provide a key insight. Too many figures or other data summaries can detract from this.
-* Clarity of Explanations
-  * Do you introduce why you are doing each analysis?
-  * How well do you explain each figure/result?
-  * Do you provide interpretations that suggest further analysis or explanations for observed phenomenon?
-* Organization and cleanliness.
-  * Make sure to remove excessive warnings, use clean easy-to-read code, organize with sections or multiple pages, use bullets, etc.
-  
-  
-**NOTE**: Your Data Analysis can be broken up into multiple pages if that helps with your organization.

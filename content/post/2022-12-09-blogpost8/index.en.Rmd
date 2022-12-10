@@ -1,0 +1,29 @@
+---
+title: blogpost8
+author: The_A+_team
+date: '2022-12-09'
+slug: []
+categories: []
+tags: []
+description: ~
+toc: yes
+authors: []
+series: []
+lastmod: '2022-12-09T23:40:16-05:00'
+featuredVideo: ~
+featuredImage: ~
+---
+
+## *The link of articles: *
+
+* https://plotly.com/r/bubble-charts/
+
+* http://rstudio.github.io/dygraphs/
+
+## *The way to polish our model: *
+
+* We plan to update our graphs using bubble charts in ploty. With the bubble chart, we plan to map out growth rate of GDP verses population growth rate, and use the bubble size as representation of the total emission. This map is a better but not overwhelming way to display a relationships between these three variables than what we plotted last week, the gg plot with only GDP verses emissions. We would also try to use the bubble plot in our interactive page, and letting the audience choose their desired data as the axises. In this way, it is easier for the audience to play around with the data, since a lot of our variable would fit in the graph. Also, the result would be quite clear and pretty, with a emphasis on our main interest, which is the CO2 emission amount.
+
+* The first thing we plan to polish is the code when we try to count the top 10 factors influencing agriculture and airlines. The table shows repetitive data, so instead of picking head (10), we manually chose head (31) in order to have non-repetitive data. Also, the sum of prop is bigger than 1, which is definitely wrong. We plan to correct the code and cut the repetitive data. And the bar graph associated with it is wrong, either, and we plan to polish it by making a boxplot based on the revised code. As the names of source_of_emissions are too long, we plan to improve the name of source_of_emissions and make the plot clearer than before. The second thing is that we want to not only show the top 10 source_of_emissions but also create a bar chart presenting the proportion of emissions of each source_of_emissions to that of the top ten source_of_emissions in total. The second thing is that we plan to think of a new graph which can help to have a clearer illustration of the increase of emission from 2010-2019. It is because some source_of_emissions have less apparent trend, maybe their emissions changes very slightly. I think we can make a bar graph showing the total emission change of the source_of_emissons that we picked from 2010-2019 so that the trend maybe more apparent than before. Then, we plan to go to check the details, for example, to rename the columns and rows into pure words instead of words with symbol like “_” or to rename them with more comprehensive and explanatory words.
+
+* We can use dygraph to make most of our plots interactive. By applying dygraphs for R, viewers are able to look at data in an interactive way, not only knowing the specific number of one point on the plot, but also be able to zoom/pan and series/point highlighting. The x axis is always plotted in time series, which is suitable for our datasets because we are focusing on the emission change during 2010 to 2019. Viewers can use the range selector to see a specific period of time and look at the change in that period. For example, for the correlation between emission and vehicle graphs, we find that the relationship between them is divided into two parts. In the first period, there is strong correlation, but in the second period, the correlation seems to be weak. So viewers can use the range selector to confirm our conclusion. The result will be clear and straightforward.

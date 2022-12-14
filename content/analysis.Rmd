@@ -1,0 +1,82 @@
+
+```{r}
+library(here)
+library(tidyverse)
+library(dplyr)
+library(AICcmodavg)
+library(ggcorrplot)
+library(ggplot2)
+co2_data <- read_csv("owid-co2-data.csv", show_col_types = FALSE)
+co2_data1 <- co2_data %>%
+  select(-iso_code, -energy_per_gdp, -co2_including_luc_per_unit_energy, -co2_including_luc_per_gdp, -co2_per_unit_energy) %>%
+  na.omit() %>%
+  filter(country != "World") %>%
+  select(country, gdp, year, population, total_ghg, cement_co2, co2_including_luc, coal_co2, consumption_co2, primary_energy_consumption, oil_co2, flaring_co2, other_industry_co2)
+
+co2_data1
+
+write_csv(co2_data1, file = here::here("dataset", "co2_data1_clean.csv"))
+save(co2_data1, file = here::here("co2_data1_clean.RData"))
+
+model1 <- lm(total_ghg ~ gdp + population + cement_co2 + co2_including_luc + coal_co2 + consumption_co2 + primary_energy_consumption + oil_co2 + flaring_co2 + other_industry_co2, data = co2_data1)
+summary(model1)
+plot(total_ghg ~ gdp + population + cement_co2 + co2_including_luc + coal_co2 + consumption_co2 + primary_energy_consumption + oil_co2 + flaring_co2 + other_industry_co2, data= co2_data1)
+
+modAIC <- MASS::stepAIC(model1, k = 2)
+modBIC <- MASS::stepAIC(model1, k = log(nrow(co2_data1)))
+co2_data2 <- co2_data1 %>%
+  select(-country, -year)
+
+correlation_matrix <- round(cor(co2_data2),1)
+corrp.mat <- cor_pmat(co2_data2)
+ggcorrplot(correlation_matrix, method ="square")
+```
+
+```{r}
+co2_data2 <- 
+  co2_data1 %>% 
+  filter(country == "China" | country == "United States" | country == "Russia" | country == "Japan" | country == "Canada")%>%
+  select(country, year, population, total_ghg, co2_including_luc,coal_co2, consumption_co2)
+co2_data2
+
+ggplot(data = co2_data2, aes(x = year, y = total_ghg, color = country)) +
+    geom_line() +
+    facet_wrap(vars(country)) +
+    labs(title = "GHG vs year of top five countries",
+         x = "Year",
+         y = "Total emissions") +
+    theme_bw()
+
+ggplot(data = co2_data2, mapping = aes(x = population, y = total_ghg)) +
+    geom_point(alpha = 0.1, aes(color = country))
+
+
+ggplot(data = co2_data2, mapping = aes(x = country, y = total_ghg)) +
+    geom_boxplot(alpha = 0) +
+    geom_jitter(alpha = 0.3, color = "tomato") + coord_flip()
+
+ggplot(data = co2_data2, aes(x = year, y = total_ghg, color = country)) +
+    geom_line()
+
+```
+
+```{r}
+co2_bubble <- co2_data1 %>%
+  group_by(country) %>%
+  summarise(n1 = sum(total_ghg)) %>%
+  mutate(prop = n1/sum(n1)) %>%
+  arrange(desc(prop))%>%
+  head(10) %>%
+  select(-n1)
+
+co2_bubble
+
+total_bubble <- co2_data1 %>%
+  filter(country == "China" | country == "United States" | country == "Russia" | country == "Brazil" | country == "Japan")
+
+total_bubble %>%
+  arrange(desc(total_ghg)) %>%
+  ggplot(aes(x=year, y=gdp, size=total_ghg, color=country)) +
+    geom_point(alpha=0.5) +
+    scale_size(range = c(.1, 10), name="Total emissions")
+```

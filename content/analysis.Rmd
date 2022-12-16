@@ -20,82 +20,27 @@ library(ggplot2)
 co2_data <- read_csv("owid-co2-data.csv", show_col_types = FALSE)
 
 co2_data1 <- co2_data %>%
-  select(-energy_per_gdp, -co2_including_luc_per_unit_energy, -co2_including_luc_per_gdp, -co2_per_unit_energy, -other_co2_per_capita, nitrous_oxide_per_capita) %>%
-  na.omit() %>%
-  filter(country != "World") %>%
-  select(iso_code, country, gdp, year, population, total_ghg, cement_co2, co2_including_luc, coal_co2, consumption_co2, primary_energy_consumption, oil_co2, flaring_co2, other_industry_co2) %>% 
-  rename(Country = iso_code)
-
-co2_data1 <- co2_data1 %>%
-  select(-Country) %>%
-  filter(country != "South Korea" | country != "Slovakia")
+   select(country, year, population, gdp, energy_per_capita, energy_per_gdp, primary_energy_consumption, total_ghg) %>%
+  na.omit() 
 
 co2_data1
-
 write_csv(co2_data1, file = here::here("dataset", "co2_data1_clean.csv"))
+
 save(co2_data1, file = here::here("co2_data1_clean.RData"))
 
-model1 <- lm(total_ghg ~ gdp + population + cement_co2 + co2_including_luc + coal_co2 + consumption_co2 + primary_energy_consumption + oil_co2 + flaring_co2 + other_industry_co2, data = co2_data1)
+model1 <- lm(total_ghg ~ population +gdp + energy_per_capita + energy_per_gdp + primary_energy_consumption, data = co2_data1)
 summary(model1)
-plot(total_ghg ~ gdp + population + cement_co2 + co2_including_luc + coal_co2 + consumption_co2 + primary_energy_consumption + oil_co2 + flaring_co2 + other_industry_co2, data= co2_data1)
+plot(total_ghg ~ population +gdp + energy_per_capita + energy_per_gdp + primary_energy_consumption, data= co2_data1)
 
 modAIC <- MASS::stepAIC(model1, k = 2)
 modBIC <- MASS::stepAIC(model1, k = log(nrow(co2_data1)))
 co2_data2 <- co2_data1 %>%
-  select(-country, -year)
+  select(-country, -year, -total_ghg)
+co2_data2
 
 correlation_matrix <- round(cor(co2_data2),1)
 corrp.mat <- cor_pmat(co2_data2)
 ggcorrplot(correlation_matrix, method ="square")
-```
-
-```{r}
-co2_data2 <- 
-  co2_data1 %>% 
-  filter(country == "China" | country == "United States" | country == "Russia" | country == "Japan" | country == "Canada")%>%
-  select(country, year, population, total_ghg, co2_including_luc,coal_co2, consumption_co2)
-co2_data2
-
-ggplot(data = co2_data2, aes(x = year, y = total_ghg, color = country)) +
-    geom_line() +
-    facet_wrap(vars(country)) +
-    labs(title = "GHG vs year of top five countries",
-         x = "Year",
-         y = "Total emissions") +
-    theme_bw()
-
-ggplot(data = co2_data2, mapping = aes(x = population, y = total_ghg)) +
-    geom_point(alpha = 0.1, aes(color = country))
-
-
-ggplot(data = co2_data2, mapping = aes(x = country, y = total_ghg)) +
-    geom_boxplot(alpha = 0) +
-    geom_jitter(alpha = 0.3, color = "tomato") + coord_flip()
-
-ggplot(data = co2_data2, aes(x = year, y = total_ghg, color = country)) +
-    geom_line()
-
-```
-
-```{r}
-co2_bubble <- co2_data1 %>%
-  group_by(country) %>%
-  summarise(n1 = sum(total_ghg)) %>%
-  mutate(prop = n1/sum(n1)) %>%
-  arrange(desc(prop))%>%
-  head(10) %>%
-  select(-n1)
-
-co2_bubble
-
-total_bubble <- co2_data1 %>%
-  filter(country == "China" | country == "United States" | country == "Russia" | country == "Brazil" | country == "Japan")
-
-total_bubble %>%
-  arrange(desc(total_ghg)) %>%
-  ggplot(aes(x=year, y=gdp, size=total_ghg, color=country)) +
-    geom_point(alpha=0.5) +
-    scale_size(range = c(.1, 10), name="Total emissions")
 ```
 
 
@@ -103,12 +48,11 @@ total_bubble %>%
 library(dplyr)
 library(tidyverse)
 Agri <- read_csv("FAOSTAT.csv", show_col_types = FALSE) 
-options(dplyr.summarise.inform = FALSE)
+
 Agri_land <- 
   Agri %>% 
   filter(str_detect(Item,"Emissions on agricultural land")) %>%
   filter(str_detect(Element, "CO2eq")) %>%
-  filter(Area == "Australia" | Area == "Austria" | Area =="Belgium" | Area =="Bulgaria" | Area == "Brazil" | Area == "Canada" | Area == "Switzerland" | Area == "China" |Area =="Cyprus" |Area =="Czech Republic"|Area =="Germany"|Area == "Denmark"|Area =="Spain"|Area =="Estonia"|Area =="Finland"|Area == "France"|Area =="United Kingdom of Great Britain and Northern Ireland"|Area =="Greece"|Area =="Croatia"|Area =="Hungary"|Area =="Ireland"|Area =="Italy"|Area =="Japan"|Area =="Kazakhstan"|Area =="Lithuania"|Area =="Luxembourg"|Area =="Latvia"|Area =="Malta"|Area =="Netherlands"|Area =="Norway"|Area =="New Zealand"|Area =="Poland"|Area =="Portugal"|Area =="Romania"|Area =="Russian Federation"|Area =="Slovak Republic"|Area =="Slovenia"|Area =="Sweden"|Area =="Turkey"|Area =="Ukraine"|Area =="United States of America" | Area == "Belarus" | Area == "Czechia" | Area == "World") %>%
   mutate(unit = "tonnes") %>%
   select(Area, Item, Element, unit, Y1990:Y2018) %>%
   pivot_longer(c(Y1990:Y2018),
@@ -123,56 +67,47 @@ Agri_land <-
   select(-Country) %>%
   ungroup() %>%
   select(-`Element(tonnes)`)%>%
-  group_by(Country, year, source_of_emissions) %>%
+  group_by(Country,year, source_of_emissions) %>%
   summarise(Emissions = sum(Emission)) %>%
   rename(country = Country) %>%
   mutate(country = gsub("United Kingdom of Great Britain and Northern Ireland", "United Kingdom", country)) %>%
   mutate(country = gsub("United States of America", "United States", country)) %>%
-  mutate(country = gsub("Russian Federation", "Russia", country)) 
-
+  mutate(country = gsub("Russian Federation", "Russia", country)) %>%
+  mutate(country = gsub("Bolivia (Plurinational State of)", "Bolivia", country)) %>%
+  mutate(country = gsub("Republic of Moldova", "Moldova", country)) %>%
+  mutate(country = gsub("Lao People's Democratic Republic", "Laos", country)) %>%
+  mutate(country = gsub("Syrian Arab Republic", "Syria", country)) %>%
+  mutate(country = gsub("United Republic of Tanzania", "Tanzania", country)) %>%
+  mutate(country = gsub("Democratic Republic of the Congo", "Democratic Republic of Congo", country)) %>%
+  mutate(country = gsub("Iran (Islamic Republic of)", "Iran", country))
+Agri_land$year = as.numeric(Agri_land$year)
 Agri_land
 write_csv(Agri_land, file = here::here("dataset", "Agri_land_clean.csv"))
 
-Agri_land$year = as.numeric(Agri_land$year)
+
 knitr::kable(head(Agri_land[, 1:4]), caption = "The CO2 emissions in agriculral usage in United States.", "simple")
 
 ```
 
 
 ```{r}
-co2_agri <- left_join(co2_data1, Agri_land, by = c("year", "country"))
+co2_agri <- full_join(co2_data1, Agri_land, by = c("year", "country"))
+co2_agri
+
 co2_agri <- co2_agri %>% 
   mutate(total_ghg2 = total_ghg * 1000) %>%
-  mutate(cement_co2_new = cement_co2 * 1000) %>%
-  mutate(co2_including_luc2 = co2_including_luc * 1000) %>%
-  mutate(coal_co2_new = coal_co2 * 1000) %>%
-  mutate(consumption_co2_new = consumption_co2 * 1000) %>%
-  mutate(primary_energy_consumption2 = primary_energy_consumption * 1000) %>%
-  mutate(oil_co2_new = oil_co2 * 1000) %>%
-  mutate(flaring_co2_new = flaring_co2 * 1000) %>%
-  mutate(other_industry_co2_new = other_industry_co2 * 1000) %>%
-  select(-total_ghg, -cement_co2, -co2_including_luc, -coal_co2, -consumption_co2, -primary_energy_consumption, -oil_co2, -flaring_co2, -other_industry_co2) %>%
+  select(-total_ghg) %>%
   rename(`Agriculture_emissions(kilotonnes)` = Emissions, `total_ghg(kilotonnes)` = total_ghg2)
-
-co2_agri <- co2_agri %>% mutate(agri_ghg_total = rowSums(co2_agri[,c(6,7)])) %>% 
+co2_agri <- co2_agri %>% mutate(agri_ghg_total = rowSums(co2_agri[,c(9,10)])) %>% 
   na.omit()
 
 co2_agri
   
-write_csv(co2_agri, file = here::here("dataset", "co2_land_clean.csv"))
-
-co2_agri1 <- co2_agri %>%
-  group_by(year) %>%
-  summarise(total = sum(agri_ghg_total))
-co2_agri1
-
+write_csv(co2_agri, file = here::here("dataset", "co2_agri_clean.csv"))
+save(co2_agri, file = here::here("dataset/co2_agri_clean.RData"))
 
 ```
 
-```{r}
-co2_agri %>%
-  ggplot(aes(x = year, y = agri_ghg_total, group = country)) + 
-  geom_line()
-```
+
 
 

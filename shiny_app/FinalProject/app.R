@@ -1,48 +1,60 @@
-
 library(shiny)
 library(shinythemes)
 library(dplyr)
 library(readr)
 library(tidyverse)
+library(ggplot2)
 
-load("Agri_air.Rdata")
-ui <- fluidPage(
-  
-  # Application title
-  titlePanel("Agriculture & Airline"),
-  
-  # Sidebar with a slider input for number of bins 
-  sidebarLayout(
-    sidebarPanel(
-      checkboxGroupInput(
-        "year",
-        "Select groups",
-        unique(Agri_air$year),
-        selected = unique(Agri_air$year)[1]
-      )
-    ),
-    # Show a plot of the generated distribution
-    mainPanel(
-      plotOutput("barPlot")
-    )
-  )
-)
+library(shiny)
+library(leaflet)
+library(maps)
 
-# Define server logic required to draw a histogram
-server <- function(input, output) {
-  
-  output$barPlot <- renderPlot({
-    # show data for  input$group from ui.R
+
+# Load data
+load("co2_agri_clean.RData")
+
+# Define UI
+ui <-
+  fluidPage(
+    titlePanel("CO2 emission and population and GDP"),
     
-    Agri_air %>%
-      filter(year %in% input$year) %>%
-      filter(source_of_emissions == "Emissions on agricultural land" | source_of_emissions == "Farm-gate emissions" | source_of_emissions == "IPCC Agriculture" | 
-               source_of_emissions == "AFOLU" | source_of_emissions == "Enteric Fermentation" | source_of_emissions == "Domestic aviation: (A)+(C)" | source_of_emissions == "International aviation (memo item): (D)+(G)") %>%
-      ggplot(aes(x = source_of_emissions, y = Emission, fill = year)) +
-      geom_col(position = "dodge") + theme(axis.text.x = element_text(size=7, angle=45, vjust=0.8, hjust=0.8))
-  })
-}
+    # Create a new Row in the UI for select Inputs
+    fluidRow(
+      column(4,
+             selectInput("country",
+                         "Country:",
+                         c("All",
+                           unique(as.character(co2_agri_clean$country))))
+      ),
+      column(4,
+             selectInput("year",
+                         "Year:",
+                         c("All",
+                           unique(as.character(co2_agri_clean$year))))
+      ),
+      
+      # Create a new row for the table.
+      DT::dataTableOutput("table")
+    ))
 
+# Define server function
+server <- 
+  function(input, output) {
+    
+    # Filter data based on selections
+    output$table <- DT::renderDataTable(DT::datatable({
+      data <- co2_agri_clean
+      if (input$country != "All") {
+        data <- data[data$country == input$country,]
+      }
+      if (input$year != "All") {
+        data <- data[data$year == input$year,]
+      }
+      
+      data
+    }))
+    
+  }
 
-# Run the application 
+# Create Shiny object
 shinyApp(ui = ui, server = server)

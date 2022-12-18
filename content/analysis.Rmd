@@ -18,6 +18,7 @@ library(tidyverse)
 library(dplyr)
 co2_data <- read_csv("owid-co2-data.csv", show_col_types = FALSE)
 
+
 co2_data1 <- co2_data %>%
    select(country, year, population, gdp, energy_per_capita, energy_per_gdp, primary_energy_consumption, total_ghg) %>%
   na.omit() 
@@ -72,32 +73,86 @@ write_csv(Agri_land, file = here::here("dataset", "Agri_land_clean.csv"))
 
 ```{r combine}
 co2_agri <- full_join(co2_data1, Agri_land, by = c("year", "country"))
-co2_agri$year <- as.character(co2_agri$year)
 
 co2_agri <- co2_agri %>% 
   mutate(total_ghg2 = total_ghg * 1000) %>%
   select(-total_ghg) %>%
   filter(country != "World") %>%
-  rename(`Agriculture_emissions(kilotonnes)` = Emissions, `total_ghg(kilotonnes)` = total_ghg2)
-co2_agri <- co2_agri %>% mutate(agri_ghg_total = rowSums(co2_agri[,c(9,10)])) %>% 
+  rename(`Agriculture_emissions(kilotonnes)` = Emissions, `total_ghg(kilotonnes)` = total_ghg2) %>%
+  mutate(`Agriculture_emissions(Kilotonnes)`= `Agriculture_emissions(kilotonnes)`/1000) %>%
+  select(-`Agriculture_emissions(kilotonnes)`)
+    
+co2_agri <- co2_agri %>% mutate(agri_ghg_total = rowSums(co2_agri[,c(9,10)])) %>%
   na.omit()
 
 co2_agri
 
 write_csv(co2_agri, file = here::here("dataset", "co2_agri_clean.csv"))
-view(co2_agri[1:4396,1:10])
+save(co2_agri, file = here::here("dataset/co2_agri_clean.RData"))
 ```
+
 
 ```{r totalline}
 co2_total <- co2_agri %>%
-  filter(country != "World") %>%
-  ggplot(aes(year,`agri_ghg_total`)) +
-  geom_line() +
-  theme(axis.text.x = element_text(size=7, angle=45, vjust=0.8, hjust=0.8)) +
-  labs(x = "Year", y = "Global Total Emission") 
+  group_by(year) %>%
+  summarise(a = sum(agri_ghg_total))%>%
+  ggplot(aes(year, a))+
+  geom_line() + 
+  geom_smooth(method="lm", se=F) +
+  geom_jitter(width = .5, size=1) +
+  labs(subtitle="Global Total Emissions", 
+       y="Total Emissions", 
+       x="Year", 
+       title="Line Trend") +
+  theme(axis.text.x = element_text(angle = 45, vjust=0.5), 
+        panel.grid.minor = element_blank())
 
 co2_total
 ```
+
+```{r point primary}
+co2_point_pri <- co2_agri %>%
+  ggplot(aes(primary_energy_consumption, agri_ghg_total))+
+  geom_point(size = 0.5) + 
+  geom_smooth(method="lm", se=F) +
+  labs(subtitle="Primary energy consumption vs. Total Emission", 
+       y="Total Emissions", 
+       x="Primary energy consumption", 
+       title="Point graph 1")
+  
+co2_point_pri
+
+```
+
+
+```{r point energy1}
+co2_point_energy1 <- co2_agri %>%
+  ggplot(aes(energy_per_capita, agri_ghg_total))+
+  geom_point(size = 0.5) + 
+  geom_smooth(method="lm", se=F) +
+  labs(subtitle="Energy per capita vs. Total Emission", 
+       y="Total Emissions", 
+       x="Energy per capita", 
+       title="Point graph 2")
+  
+co2_point_energy1
+
+```
+
+
+```{r point energy2}
+co2_point_energy2 <- co2_agri %>%
+  ggplot(aes(energy_per_gdp, agri_ghg_total))+
+  geom_point(size = 0.5) + 
+  geom_smooth(method="lm", se=F) +
+  labs(subtitle="Energy per gdp vs. Total Emission", 
+       y="Total Emissions", 
+       x="Energy per gdp", 
+       title="Point graph 3")
+  
+co2_point_energy2
+```
+
 
 ```{r facet}
 co2_prop <- co2_agri %>%
@@ -116,48 +171,46 @@ co2_facet <- co2_agri %>%
   ggplot(aes(year, agri_ghg_total, color = country)) +
     geom_line() +
     facet_wrap(vars(country)) +
-    labs(title = "Emissions vs year of top ten countries",
+    labs(title = "Facet wrap",
+         subtitle="Emissions vs Year (top nine countries)",
          x = "Year",
          y = "Total Emissions") +
     theme_bw()
+
 co2_facet
 ```
 
+
 ```{r bar}
-co2_prop <- co2_agri %>%
-  filter(country != "World") %>%
-  group_by(country) %>%
-  summarise(n1 = sum(agri_ghg_total)) %>%
-  mutate(prop = n1/sum(n1)) %>%
-  arrange(desc(prop))%>%
-  head(10) %>%
-  select(-n1)
-co2_prop
+vec <- c("13.6%","9.0%","8.6%","8.0%","6.1%")
 
 co2_bar <- co2_prop %>%
   filter(country == "China" | country == "Brazil" | country == "India" | country == "Indonesia" | country == "United States") %>%
   ggplot(aes(x = country, y = prop, fill = country)) +
   geom_bar(stat="identity", width=1) +
-  geom_text(aes(label = prop), vjust = 0) +
-  labs(x = "Country", y = "Total Emissions")
+  geom_text(aes(label = vec), vjust = 0) +
+  labs(title = "Bar graph",
+      subtitle="Rank of top 5 countries' emissions",
+      x = "Country", y = "Total Emissions")
 
 co2_bar
 
 ```
 
-
-```{r bubble}
-co2_bubble <- co2_agri %>%
+```{r bar2}
+co2_bar2 <- co2_agri %>%
   filter(country == "China" | country == "Brazil" | country == "India" | country == "Indonesia" | country == "United States") %>%
-  arrange(desc(agri_ghg_total)) %>%
-  ggplot(aes(x= gdp, y= agri_ghg_total, size= population, color=country)) +
-    geom_point(alpha=0.5) +
-    scale_size(range = c(.1, 10), name="Total emissions") +
-  labs(x = "GDP", y = "Total Emissions")
+  ggplot(aes(x = country, y = `Agriculture_emissions(Kilotonnes)`, fill = country)) +
+  geom_bar(stat="identity", width=1) +
+  labs(subtitle="Agricultural land Emission of top 5 countries", 
+       y="Agricultural land Emission", 
+       x="Country", 
+       title="Bar graph 2")
 
-co2_bubble
+co2_bar2 
 
 ```
+
 
 ```{r boxplot}
 co2_box <- co2_agri %>% 
@@ -167,34 +220,112 @@ co2_box <- co2_agri %>%
   geom_jitter(alpha = 0.3, color = "Tomato") +
   labs(x = "Country", 
        y = "Primary Energy Consumption", 
-       fill='Years', 
-       title= 'Top 5 total emission') +
-  coord_flip()
+       subtitle="Primary energy consumption of top 5 countries",
+       fill='Country', 
+       title= "Boxplot 1") 
+
  co2_box
 ```
 
-```{r bubble2}
-co2_bubble2 <- co2_agri %>%
+
+```{r voilin}
+co2_violin <- co2_agri %>%
   filter(country == "China" | country == "Brazil" | country == "India" | country == "Indonesia" | country == "United States") %>%
-  arrange(desc(agri_ghg_total)) %>%
-  ggplot(aes(x= energy_per_gdp, y= agri_ghg_total, size= gdp, color=country)) +
+  ggplot() +
+  geom_violin(aes(x = country, y= energy_per_gdp, color = country)) + 
+  labs(title="Violin plot", 
+       subtitle="Energy per GDP of top 5 countries",
+       x="Country",
+       y="Energy per GDP")
+
+co2_violin
+```
+
+install.packages("ggthemes")
+```{r boxplot2}
+library(ggplot2)
+library(ggthemes)
+co2_box2 <- co2_agri %>%
+  filter(country == "China" | country == "Brazil" | country == "India" | country == "Indonesia" | country == "United States") %>%
+  ggplot(aes(country, energy_per_capita)) +
+  geom_boxplot(aes(fill=country, alpha = 0)) + 
+  geom_jitter(alpha = 0.5, color = "Tomato") + 
+      labs(title="Boxplot 2", 
+           subtitle="Energy per capita of top 5 countries",
+           x="Country",
+           y="Energy per capita")
+
+co2_box2
+```
+
+
+```{r bubble}
+co2_bubble <- co2_agri %>%
+  filter(country == "China" | country == "Brazil" | country == "India" | country == "Indonesia" | country == "United States") %>%
+  ggplot(aes(x= year, y= agri_ghg_total, size= population, color = country)) +
     geom_point(alpha=0.5) +
-    scale_size(range = c(.1, 10), name="Total emissions") +
-  labs(x = "Energy per GDP", y = "Total Emission")
+    scale_size(range = c(.1, 10), name="Population") +
+  labs(title="Bubble plot", 
+       subtitle="Year/Total Emissions/Population of top 5 countries",
+       x = "Year", y = "Total Emissions")
 
-co2_bubble2
+co2_bubble
 
 ```
 
-```{r line}
-co2_line <- co2_agri %>%
-  filter(country == "China" | country == "Brazil" | country == "India" | country == "Indonesia" | country == "United States") %>%
-  ggplot(aes(energy_per_capita,agri_ghg_total, color = country)) +
-  geom_point() +
+install.packages("ggrepel")
+```{r modeling}
+library(here)
+library(tidyverse)
+library(dplyr)
+library(AICcmodavg)
+library(ggcorrplot)
+library(ggplot2)
+
+model1 <- lm(agri_ghg_total ~ population + gdp + energy_per_capita + energy_per_gdp + primary_energy_consumption, data = co2_agri)
+
+summary(model1)
+
+plot(agri_ghg_total ~ population + gdp + energy_per_capita + energy_per_gdp + primary_energy_consumption, data = co2_agri)
+
+modAIC <- MASS::stepAIC(model1, k = 2)
+modBIC <- MASS::stepAIC(model1, k = log(nrow(co2_agri)))
+
+co2_agri1 <- co2_agri %>%
+  select(-year, -country, -source_of_emissions, -agri_ghg_total, -`total_ghg(kilotonnes)`)
+correlation_matrix <- round(cor(co2_agri1),1)
+corrp.mat <- cor_pmat(co2_agri1)
+ggcorrplot(correlation_matrix, method ="square")
+```
+
+
+install.packages("regsubsets")
+```{r}
+library(leaps)
+regfit_fwd = regsubsets(agri_ghg_total ~ population + gdp + energy_per_capita + energy_per_gdp + primary_energy_consumption, data = co2_agri, nvmax = 19, method = "forward")
+
+summary(regfit_fwd)
+```
+
+
+```{r}
+library(dplyr)
+top_5_count <- co2_agri %>%
+  select("country", "year", "agri_ghg_total") %>%
+  filter(!str_detect(country, "World")) %>%
+  filter(year == 2018) %>%
+  mutate(rank = dense_rank(desc(agri_ghg_total))) %>%
+  filter(rank <=5) %>%
+  arrange(rank)
+top_5_count
+top5 <- co2_agri %>%
+  filter(country %in% pull(top_5_count, country)) %>%
+  filter(year >=1990) %>%
+  ggplot(aes(year, gdp, color = country)) +
   geom_line()+
-  labs(x = "Energy per capita", y = "Total Emissions")
+  scale_color_viridis_d()
 
-co2_line
+top5
+
 
 ```
-

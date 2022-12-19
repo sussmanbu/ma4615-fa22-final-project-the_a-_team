@@ -7,21 +7,19 @@ featuredImage: https://upload.wikimedia.org/wikipedia/commons/7/77/Pebbleswithqu
 draft: false
 ---
 
-**Motivation**:
+## Exploratory Data Analysis/Model Prediction
 
-    For decades, climate change has been a heated topic worldwide. While we all have heard about climate change and global warming, it seems a broad and far-away question. However, it is  actually a very urgent issue. With climate impacts becoming increasingly intertwined with our everyday lives, climate change is no longer a far-off threat. Under such circumstance, we should know what’s our roles in climate change; how climate changes impact us; how can we change the climate if the object is enormous compared to our effort.  Our group felt intrigued and responsible for investigating the relationship between human activities and climate change. It is a very meaningful subject to dig into because climate change is threatening the way we live and the future of our planet. Having a clearer understanding of it helps to improve the environment and human welfare. Specifically, in our analysis, we inspect the relationship between the growth of countries and their impacts to climate change which is greenhouse gas emissions. 
-     Our study investigates the greenhouse gas emissions from 1990-2018 for countries worldwide. Our data includes some demographic variables such as population and GDP and data from two major sectors which are agricultural land and energy, as they are the most vital aspects of human life and the foundation of a country’s growth. And the variables in these two sectors include energy_per_capita, energy_per_gdp, primary_energy_consumption, Source_of_emissions, Agriculture_emissions(kilotonnes), total_ghg(kilotonnes),
-     agri_ghg_total. Through our analysis, we could answer the following questions: 1. What is the trend of greenhouse gas emissions, and how did it change through the years? 2. How energy and agriculture sectors are impacting greenhouse gas emissions? 3. Does greenhouse gas emission inevitably followed by GDP growth or industry development? 4. Which countries are more sustainable than others/ which countries contribute more emissions than other countries? 5. Based on our project, can we predict where we are heading? 6. Can we come up with any suggestions for being more sustainable?
+-   Motivation:
 
-**Limitations**:
+    For decades, climate change has been a heated topic worldwide. While we all have heard about climate change and global warming, it seems a broad and far-away question. However, it is actually a very urgent issue. With climate impacts becoming increasingly intertwined with our everyday lives, climate change is no longer a far-off threat. Under such circumstance, we should know what's our roles in climate change; how climate changes impact us; how can we change the climate if the object is enormous compared to our effort. Our group felt intrigued and responsible for investigating the relationship between human activities and climate change. It is a very meaningful subject to dig into because climate change is threatening the way we live and the future of our planet. Having a clearer understanding of it helps to improve the environment and human welfare. Specifically, in our analysis, we inspect the relationship between the growth of countries and their impacts to climate change which is greenhouse gas emissions. Our study investigates the greenhouse gas emissions from 1990-2018 for countries worldwide. Our data includes some demographic variables such as population and GDP and data from two major sectors which are agricultural land and energy, as they are the most vital aspects of human life and the foundation of a country's growth. And the variables in these two sectors include energy_per_capita, energy_per_gdp, primary_energy_consumption, Source_of_emissions, Agriculture_emissions(kilotonnes), total_ghg(kilotonnes), agri_ghg_total. Through our analysis, we could answer the following questions: 1. What is the trend of greenhouse gas emissions, and how did it change through the years? 2. How energy and agriculture sectors are impacting greenhouse gas emissions? 3. Does greenhouse gas emission inevitably followed by GDP growth or industry development? 4. Which countries are more sustainable than others/ which countries contribute more emissions than other countries? 5. Based on our project, can we predict where we are heading? 6. Can we come up with any suggestions for being more sustainable?
+
+-   Limitations:
 
     Although we aim to map emissions worldwide, there are gaps in our dataset that disabled us from analyzing some specific areas. For instance, many developing countries are not equipped with enough resources to record detailed sector-based emission data, and we could only obtain the total emission from that country. As a result, our analysis is a partial representation of the world emission trend. Additionally, as our datasets have many objectives, we only include in-depth analysis for the top emitter to ensure the clarity of the graphs. To address this information, we will use our interactive as a tool to enable the audience to explore their interests. Moreover, many contributors to greenhouse gas emissions exist, and our analysis only touched a little. These datasets are chosen based on our question of interest, and they probably are not the best to describe the greenhouse gas emission trend. In the future, we could deepen our study by selecting different sectors of human activity and analyzing the impact to provide a more comprehensive model.
 
-**Modeling and Inference:**
+## **Section 1: Visualized graphs**
 
-**Section 1: Visualized graphs**
-
-**1.1 Global Emission trend over the year**
+-   1.1 Global Emission trend over the year
 
 ![](images/WechatIMG497.jpeg)
 
@@ -29,7 +27,7 @@ draft: false
 
 In this graph, we plotted the trend of global greenhouse gas emissions from 1990 to 2018. The dots represent the amount of greenhouse gas emission from all countries added in the corresponding year, and the blue line is a fitted trend line. Overall, there has been a gradual increase in total emissions. However, as we can see on the graph, there are many fluctuations from time to time, especially before 2003, when the highs and lows are extreme. After 2003, the level of greenhouse gas emissions starts to align at a stable level, but there are ups and downs still. As we saw these trends, we wondered, if the emission is only affected by the number of emitters or some other familiar sources, what would cause such large fluctuations? During 1997 and 2003, when emissions started falling for several years, we noticed that during that period, a stock market crash in the United States was caused by an economic crisis in Asia. Every emission trend seems to tie up with economic growth and political events. Therefore, from this starting point, we narrowed down our object to the world's largest emitters as our representatives to inspect closely how these factors have impacted their emission trend. And we included GDP and population size as indicators in our analysis to illustrate the relationship between economical factors and greenhouse gas emissions.
 
-**1.2 Rank the countries according to their contributions to CO2 emissions.**
+-   1.2 Rank the countries according to their contributions to CO2 emissions
 
 ![](images/WechatIMG501.jpeg)
 
@@ -43,7 +41,7 @@ This plot exhibits the top nine emitters in the world and their emission trends 
 
 Coincidentally, the five countries which have the most obvious trend in greenhouse gas emissions are also the top five countries that contribute most to total greenhouse gas emissions. As a result, we chose to focus on these five countries to represent the rest of the world. This caught us thinking, what is common among these large emitters? In order to find out the reasons which cause the top emissions in these countries, we need to analyze more factors relating to greenhouse gas emissions.
 
-**1.3 GDP and Population of top 5 countries**
+-   1.3 GDP and Population of top 5 countries
 
 ![](images/WechatIMG505.jpeg)
 
@@ -55,12 +53,11 @@ In previous research, we found that economical trends and some domestic indexes 
 
 ![](images/Screen%20Shot%202022-12-19%20at%204.18.32%20PM.png)
 
-Then, we investigated the relationship between population and total emissions. The size of the bubble points represents the population size of that country. We can see that China has the largest population size, which also has the highest emission level. The extremely large population density is a determinant of China's greenhouse gas emissions. Meanwhile, even though India has nearly the same population size as China, it has much lower greenhouse gas emissions. Also, the US still has a high emission level compared to those countries which have large population sizes. Looking back at the GDP trends of these two countries, we assume the high GDP level of the US contributes to the high emissions. Besides, Brazil and Indonesia present similar patterns of the population size lines as their total emission lines. We concluded that population and total emissions have a positive relationship in most cases. 
+Then, we investigated the relationship between population and total emissions. The size of the bubble points represents the population size of that country. We can see that China has the largest population size, which also has the highest emission level. The extremely large population density is a determinant of China's greenhouse gas emissions. Meanwhile, even though India has nearly the same population size as China, it has much lower greenhouse gas emissions. Also, the US still has a high emission level compared to those countries which have large population sizes. Looking back at the GDP trends of these two countries, we assume the high GDP level of the US contributes to the high emissions. Besides, Brazil and Indonesia present similar patterns of the population size lines as their total emission lines. We concluded that population and total emissions have a positive relationship in most cases.
 
-After analyzing the GDP and population of those countries, we found that the relationships between these two indicators and total emissions have certain patterns but are not definite. We still need to incorporate more indicators in this research to investigate the driving factors of greenhouse gas emissions. 
+After analyzing the GDP and population of those countries, we found that the relationships between these two indicators and total emissions have certain patterns but are not definite. We still need to incorporate more indicators in this research to investigate the driving factors of greenhouse gas emissions.
 
-**1.4 Relationship between energy consumption and greenhouse gas emissions\
-**
+-   1.4 Relationship between energy consumption and greenhouse gas emissions
 
 ![](images/WechatIMG509.jpeg)
 
@@ -78,9 +75,9 @@ This plot maps out the distribution of total energy used in each country between
 
 ![](images/Screen%20Shot%202022-12-19%20at%204.20.33%20PM.png)
 
-This plot has the same information as the graph above but rules out the impact of different population sizes. It shows, however, a significantly higher energy usage per person in the United States than in other countries, including China. China and the US have a larger range than other countries, which indicates that their distribution is spread out. Meanwhile, the box is shorter for India and China compared to the previous graph, which means the level of energy per capita is more concentrated than the primary energy consumption. So the total energy used box plot presents a different trend from the energy per capita box plot. 
+This plot has the same information as the graph above but rules out the impact of different population sizes. It shows, however, a significantly higher energy usage per person in the United States than in other countries, including China. China and the US have a larger range than other countries, which indicates that their distribution is spread out. Meanwhile, the box is shorter for India and China compared to the previous graph, which means the level of energy per capita is more concentrated than the primary energy consumption. So the total energy used box plot presents a different trend from the energy per capita box plot.
 
-**1.5 Relationship between energy per GDP and total emissions**
+-   1.5 Relationship between energy per GDP and total emissions
 
 ![](images/WechatIMG515.jpeg)
 
@@ -97,7 +94,7 @@ Although the essential, unlimited growth in energy usage is undermining the effo
 
 Merely focusing on the energy sector will be restrictive and partial for our research. For example, Brazil ranks third in greenhouse gas emission contribution among all the countries, but it has very low energy consumption. In order to answer this question, we need to focus on another important sector --- agriculture.
 
-**1.6 Emission in agriculture**
+-   1.6 Emission in agriculture
 
 ![](images/WechatIMG519.jpeg)
 
@@ -105,7 +102,7 @@ Merely focusing on the energy sector will be restrictive and partial for our res
 
 By exploring the data, we found that the answer to our previous question is agriculture. All of the top emitters shown in the last graph are the primary producers in the agriculture industry. This bar graph plots the top five emitters in the agriculture sector, and the rank aligns with our previous chart. As the world's largest agricultural emitter, Brazil is also a leading exporter of crops, meat, milk, fruits, and coffee, as we all know. It produces a vast amount of food, and agriculture is the critical foundation of its economy. So even though Brazil has low energy consumption, it still takes the lead in total greenhouse gas emissions. China and India both strike rice cultivation and make a tremendous amount of food due to their large populations. Indonesia exports mainly rice, coffee, and oil, while the United States supplies crops, meat, and milk. These activities considerably impact the climate, as it is a significant part of greenhouse gas emission. But clearly, there is no way that we could reduce the production of agriculture since food is crucial to every human being. Therefore, we should investigate ways to reduce greenhouse gas emissions from the production process, either by inventing new sustainable ways of cultivating or by decreasing the by-product in the process that causes emissions.
 
-**Section 2: The model**
+## **Section 2: The model**
 
 ![](images/Screen%20Shot%202022-12-19%20at%203.02.10%20PM.png)
 
@@ -157,6 +154,6 @@ Last but not least, we did the regression model for dropping out the predictor v
 
 A graph we made in the EDA before also reflects the final model we chose, and there is a graph of `facet_warp()` in the EDA where we made total greenhouse gas emissions and three other variables linked to energy. Greenhouse gas emissions does not have a clear linear relationship with the predictor variable energy_per_gdp.
 
-**Conclusion**:
+-   Conclusion:
 
-From our research, we concluded that greenhouse gas emissions increased over the years globally. To narrow down our discussion, we picked several crucial indicators to analyze greenhouse gas emissions, including external indicators and internal indicators of greenhouse gas emissions. Furthermore, we focused on five major emitters of greenhouse gas emissions and regarded them as the representation of the rest of the world. For the external factors, we chose GDP and population for analysis. As GDP and population size increase, major countries\' greenhouse gas emissions also increase, only with a few exceptions, which were influenced by domestic economics and environmental policies. For internal factors, we focused on two sectors, which are energy and agriculture. Primary energy consumption and energy per capita have a positive relationship with total greenhouse gas emissions. Primary energy consumption has the most obvious correlation with total emissions. The agricultural sector contributed a major part of the top five countries\' emissions. As a result, we predicted that if energy consumption and agricultural land use continue to rise, the increasing rate of total emissions won\'t slow down in the future. 
+From our research, we concluded that greenhouse gas emissions increased over the years globally. To narrow down our discussion, we picked several crucial indicators to analyze greenhouse gas emissions, including external indicators and internal indicators of greenhouse gas emissions. Furthermore, we focused on five major emitters of greenhouse gas emissions and regarded them as the representation of the rest of the world. For the external factors, we chose GDP and population for analysis. As GDP and population size increase, major countries' greenhouse gas emissions also increase, only with a few exceptions, which were influenced by domestic economics and environmental policies. For internal factors, we focused on two sectors, which are energy and agriculture. Primary energy consumption and energy per capita have a positive relationship with total greenhouse gas emissions. Primary energy consumption has the most obvious correlation with total emissions. The agricultural sector contributed a major part of the top five countries' emissions. As a result, we predicted that if energy consumption and agricultural land use continue to rise, the increasing rate of total emissions won't slow down in the future.

@@ -2,66 +2,154 @@
 title: Big Picture
 description:
 toc: true
-featuredImage: /images/The_Big_Picture_2.jpeg
+featuredImage: /images/climate2.jpeg
 featuredVideo:
 draft: false
 ---
 
-This comes from the file `content/big_picture.Rmd`.
+## An urgent mission for Jack
 
-Think of this page as your 538/Upshot style article. This means that you should try to tell a story through the data and your analysis. Read articles from those sites and similar sites to get a feeling for what they are like. Importantly, these should be geared towards the general public. You shouldn't assume the reader understands how to interpret a linear regression. Focus on interpretation and visualizations.
+## **Background information: Balance between development and climate**
 
----
+Imagine your life back in the 1990s. Everything was peaceful and simple, with people enjoying the face to face contact with each other and nature. There wasn’t much to worry about, except for some little problems in their daily lives. The cities grew bigger and bigger, and the nights were extended by the blinding lights shining in windows. It was a change that brought us the city of stars, but also blinded us from seeing a full sky of stars. The Greenhouse gases released by the rapid development have quietly shrouded us, but there comes a cost for the growth. It is hard to reckon why our economics are rising, while Venice is sinking. Maybe, in the year 2022, it is time for us to take a step back from pursuing growth and balance our life with the climate in a more sustainable way. 
 
-## Rubric: On this page
+## **The story begins...**
 
-You will
+Bridgton is a peaceful and beautiful town. One day in 2018, the town was instantly flooded by a sudden fog. People screamed in the fog and fled in panic. Jack, a wizard, was trapped in a small library, waiting for the fog to dissipate. However, the dense fog didn’t disperse as expected, and those who walked into the fog never returned. From the news, Jack realized that the fog was actually greenhouse gas which was neglected by human beings for centuries, and it started to spread to the whole world and harm the planet. Jack can use his magic to travel back to 1990. To save the planet, Jack decided to explore the factors influencing the emission around the globe during these years. He will travel back to 1990 after having a deep understanding of the situation. Then, he immediately started to do the research in the library...
 
+## **Question: What is the trend of globe emissions?**
 
+To understand the current situation, Jack did a trend plot to make sure that the total emission of greenhouse gas is increasing over years. As you can see from the line graph, the total emissions line increases gradually with few fluctuations from 1990 to 2018 around the world. There’s a line that shows emissions increase over years. This result is not surprising, considering the rising world population and increasing world production. As a result, Jack aware the urgency of improvement for the world, and he plans to go deeper and look at the global distribution of emission in order to have a well-rounded understanding of the situation.
 
-* Title
-  * Your big picture page should have a creative/click-baity title/headline that provides a hint about your thesis.
-* Clarity of Explanation
-  * You should have a clear thesis/goal for this page. What are you trying to show? Make sure that you explain your analysis in detail but don't go into top much mathematics or statistics. The audience for this page is the general public (to the extent possible).
-* Quality of Figures
-  * Each figure should be very polished and also not too complicated. There should be a clear interpretation of the figure so the figure has a clear purpose. Even something like a histogram can be difficult to interpret for non-experts.
-* Creativity
-  * Do your best to make things interesting. Think of a story. Think of how each part of your analysis supports the previous part or provides a different perspective.
-  
-**Note**: This page should have no code visible, i.e. use `echo=FALSE`.  
+```{r totalline, message=FALSE, echo=FALSE}
+suppressPackageStartupMessages(library(tidyverse))
+library(dplyr)
+co2_agri <- read_csv("co2_agri_clean.csv", show_col_types = FALSE) 
+co2_total <- co2_agri %>%
+  group_by(year) %>%
+  summarise(a = sum(agri_ghg_total))%>%
+  ggplot(aes(year, a))+
+  geom_line() + 
+  geom_smooth(method="lm", se=F) +
+  geom_jitter(width = .5, size=1) +
+  labs(subtitle="Global Total Emissions", 
+       y="Total Emissions", 
+       x="Year", 
+       title="Line Trend") +
+  theme(axis.text.x = element_text(angle = 45, vjust=0.5), 
+        panel.grid.minor = element_blank())
 
----
-
-## Rubric: Other components
-
-### Interactive
-
-You will also be required to make an interactive dashboard like [this one](/flex/flex.html).
-
-Your Big Data page should include a link to an interactive dashboard. The dashboard should be created either using Shiny or FlexDashboard (or another tool with professor's approval). This interactive component should in some way support your thesis from your big picture page. Good interactives often provide both high-level understanding of the data while allowing a user to investigate specific scenarios, observations, subgroups, etc.
-
-* Quality and ease of use of the interactive components.
-Is it clear what can be explored using your interactive components?
-Does it enhance and reinforce your conclusions from the Big Picture?
-Plotly with default hover text will get no credit. Be creative!
+co2_total
+```
 
 
-### Video Recording
+## **Global overview of emission distribution:**
 
-Make a video recording (probably using Zoom) demonstrating your interactive components.
-You should provide a quick explanation of your data and demonstrate some of the conclusions from your EDA.
-This video should be no longer than 4 minutes.
-Include a link to your video (and password if needed) in your README.md file on your Github repository. You are not required to provide a link on the website.
-This can be presented by any subset of the team members.
+* Total emission distribution
+
+This gives Jack an idea of how the emission looks over 30 years. He sees the world’s largest economies —China and the United States- produce exceedingly greenhouse gases. Other countries with less total GDP have released emissions at a similar level. Brazil, located just under the United States, produces more emissions than China. He might justify that this is caused by the country’s enormous size. Still, Indonesia, an island country in Asia, also shows significant emissions. When he looks at Europe, where most developed countries are located, there isn’t much emission happening compared to the others. There are more things that we need to consider, and geography might be one of them. The high-emission countries are mainly located near the equator, where the temperature is suitable for most of the plant’s growth. This indicates that these countries often have very large and developed agriculture industries. Agriculture emissions have contributed over 10% of the world’s total emissions. With that share, it is ranked the second most prominent sector in emissions. 
+
+```{r, warning=FALSE, echo=FALSE}
+data <- read.csv("co2_agri_clean.csv")
+data <- data[, -8]
+data$country[data$country=="United States"] <- "USA"
+data$country[data$country=="United Kingdom"] <- "UK"
+data$country[data$country=="Czechia"] <- "Czech Republic"
+data$country[data$country=="Congo"] <- "Republic of Congo"
+data$country[data$country=="Democratic Republic of Congo"] <- "Democratic Republic of the Congo"
 
 
-### Rest of the Site
+world <- map_data("world") %>% left_join(data, by=c("region"="country"))
+ggplot(world, aes_string(x="long", y="lat", group="group", fill="agri_ghg_total")) + geom_polygon(color="gray")+
+      scale_fill_gradient(low="light blue", high="dark red")+ labs(fill = "Total Emission", y="Latitude", x="Longtitude")
+```
 
-Finally, here are important things to keep in mind for the rest of the site. 
 
-The main title of your page is informative.
-Each post has an author/description/informative title.
-All lab required posts are present.
-Each page (including the home page) has a nice featured image associated with it.
-Your about page is up to date and clean.
-You have removed the generic posts from the initial site template.
+* Agricultural emission distribution
+
+This picture shows the agriculture emission level in the world, which looks a lot similar to the emission graph displayed before. The main difference is that Brazil and Indonesia, the formerly less emission-tensed countries, are now the top emitter in the agriculture sector. Brazil and Indonesia are one of the largest producers of crops and dairy products. And lots of these products were exported worldwide. Their emission level is actually reasonable given this economic structure. With this piece to the puzzle, we now could see better how the country's economy echoes with emissions.
+
+```{r, echo=FALSE}
+library(tidyverse)
+data1 <- read.csv("co2_agri_clean.csv")
+data1 <- data[, -8]
+data1$country[data1$country=="United States"] <- "USA"
+data1$country[data1$country=="United Kingdom"] <- "UK"
+data1$country[data1$country=="Czechia"] <- "Czech Republic"
+data1$country[data1$country=="Congo"] <- "Republic of Congo"
+data1$country[data1$country=="Democratic Republic of Congo"] <- "Democratic Republic of the Congo"
+
+world <- map_data("world") %>% left_join(data1, by=c("region"="country"))
+ggplot(world, aes_string(x="long", y="lat", group="group", fill="Agriculture_emissions.Kilotonnes.")) + geom_polygon(color="gray")+
+      scale_fill_gradient(low="light blue", high="dark red")+ labs(fill = "Agriculture Emission", y="Latitude", x="Longtitude")
+```
+
+
+* Energy Consumption distribution
+
+But still, there is more to consider. Jack finds energy consumption contributes even more than the agriculture sector. When he looks at the energy consumption map, only the United States stands out. The total energy consumption in the United States is doubled compared to any other country in the world. On average, the consumption level in the US is the highest. In this way, energy consumption greatly contributes to total emissions. Energy is simply more available, affordable, and needed for the larger living area than in other places. It has positive relationship with total emissions. Perhaps the fact that the most common way of commuting is by automobile also contributes a lot to greenhouse gases. On the other hand, this high level of energy consumption actually boosts the economy’s growth, and it is pretty efficient in this way. But for our common good, perhaps it’s better to try to adapt to a greener way — switching to an electric vehicle, for example. 
+
+
+```{r, echo=FALSE}
+library(tidyverse)
+data <- read.csv("co2_agri_clean.csv")
+data <- data[, -8]
+data$country[data$country=="United States"] <- "USA"
+data$country[data$country=="United Kingdom"] <- "UK"
+data$country[data$country=="Czechia"] <- "Czech Republic"
+data$country[data$country=="Congo"] <- "Republic of Congo"
+data$country[data$country=="Democratic Republic of Congo"] <- "Democratic Republic of the Congo"
+
+
+world <- map_data("world") %>% left_join(data, by=c("region"="country"))
+ggplot(world, aes_string(x="long", y="lat", group="group", fill="primary_energy_consumption")) + geom_polygon(color="gray")+
+      scale_fill_gradient(low="light blue", high="dark red")+ labs(fill = "Energy Consumption", y="Latitude", x="Longtitude")
+```
+
+## **External factors breakdown:**
+
+After Jack evaluates the distribution of emission situation around the globe, he has understood both agriculture and energy are important indicators of total emissions. What about external factors such as GDP and population? What’s their relationship with total emissions? In the following graphs, the dots in the left represent the total emissions of GDP, and the dots in the right represent the total emissions of Population, and the blue lines in both graphs help to direct the trend. With more population and GDP, perhaps emission is the side back of economic and social development. While the relationship between GDP and total emission is stronger than the relationship between population and total emission, they both have positive relationship with total emissions.
+
+```{r gdp+ppl, message=FALSE, warning=FALSE, echo=FALSE}
+plot2 <- 
+  co2_agri %>% 
+  pivot_longer(cols=c(3,4), names_to='Predictor',values_to='value')
+
+predictor_names <- 
+  list(
+  "gdp" = "GDP",
+  "population" = "Population")
+
+predictor_labeller <- 
+  function(variable,value){
+  return(predictor_names[value])
+}
+
+plot2 %>% 
+  ggplot(aes(value, agri_ghg_total)) + 
+  geom_point() + 
+  facet_wrap('Predictor',scales="free", labeller=predictor_labeller) +
+  geom_smooth(method='lm', se=FALSE) + labs(y= 'Total Emissions',title="Line plot", 
+       subtitle="GDP vs.Total Emissions and Population vs.Total Emissions") +
+  theme(axis.title.x=element_blank())
+
+```
+
+## **Interactive Plots:**
+
+
+What indicator do you want to explore？
+
+Here we have an interactive dashboard for you to explore emissions from all over the world at your interest: link
+
+* Links: https://finalprojecta.shinyapps.io/FinalProject/
+
+* We have a complete table for you to look at the country, year, population, gdp, energy_per_capita, energy_per_gdp, primary_energy_consumption, source_of_emissions, total_ghg.(kilotonnes), Agriculture _emission(kilotonnes), and agri_ghg_total between 1990-2018. Users could compare the difference in the amount for specific indicators of emissions between years. Also, users can choose the data by ascending order or descending by clicking the button. A search column is up the right, which allows users to explore any information that they are interested in. For users’ convenience, we also allow them to choose 10, 25, 50, or 100 entries. Users can explore whatever information because the table gives them the maximum flexibility.
+
+* Links: https://finalprojecta.shinyapps.io/FinalProject2/
+
+* Additionally, the world map displays the intensity of indicators. It covers data from 153 countries. You may choose any indicators and compare them between countries. For example, you are able to adjust all the variables such as agri_ghg_total and energy_per_capita at different years to see the corresponding world map color and distribution. While deeper color refers to larger value, more slight color means the value is comparably lower.
+
+## **Conclusion&Discussion:**
+
+With the mission to save the planet, Jack explores the distribution of emission situation around the globe and factors influencing the total emissions. He finds that agriculture and energy consumptions are two important factors contributing to global emissions, and he also learns areas that are in severe condition, thus needs urgent improvement. In this way, he will have a focus or direction to assist with reduction of greenhouse gas emissions after travelling back to 1990. To understand factors influencing emissions in a more well-rounded way, he even investigates external factors like GDP and population. By exploring relationship between population & total emissions and GDP & total emissions, Jack would be able to signal people to develop the economy in a more sustainable way, and avoid climate change as the cost of growth. And there are several recommendations to mitigate the greenhouse gas emissions. Perhaps practicing rational grazing to sequester carbon in the soil, making power on-site with renewables and other climate-friendly energy resources, controlling the population growth, and promoting inclusive and suitable economic growth.

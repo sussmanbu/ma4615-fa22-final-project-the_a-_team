@@ -7,10 +7,6 @@ featuredImage: /images/download.png
 draft: false
 ---
 
-This comes from the file `content/analysis.Rmd`.
-
-We describe here our detailed data analysis.
-
 ## Exploratory Data Analysis/Model Prediction
 
 
@@ -311,8 +307,7 @@ To bring out the correlation matrix from a statistical point of view, we did the
 
 ```{r vif}
 vif_value <- vif(model1)
-barplot(vif_value, main = "VIF Values", hori = TRUE, col = "steelblue", cex.names = 0.3) 
-
+barplot(vif_value, main = "VIF Values", hori = TRUE, col = "steelblue", cex.names = 0.4, las = 1.5, srt = 45) 
 abline(v = 5, lwd = 3, lty = 2)
 ```
 

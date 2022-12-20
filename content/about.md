@@ -6,7 +6,7 @@ featuredImage:
 draft: false
 ---
 
-## **About**
+This is the final project website for The_A+_team in Data Science.
 
 ## Xinyi Pan
 

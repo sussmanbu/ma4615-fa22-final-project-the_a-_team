@@ -21,7 +21,7 @@ Bridgton is a peaceful and beautiful town. One day in 2018, the town was instant
 
 To understand the current situation, Jack did a trend plot to make sure that the total emission of greenhouse gas is increasing over years. As you can see from the line graph, the total emissions line increases gradually with few fluctuations from 1990 to 2018 around the world. There’s a line that shows emissions increase over years. This result is not surprising, considering the rising world population and increasing world production. As a result, Jack aware the urgency of improvement for the world, and he plans to go deeper and look at the global distribution of emission in order to have a well-rounded understanding of the situation.
 
-```{r totalline, message=FALSE, echo=FALSE}
+```{r totalline, message=FALSE, echo=FALSE, warning=FALSE}
 suppressPackageStartupMessages(library(tidyverse))
 library(dplyr)
 co2_agri <- read_csv("co2_agri_clean.csv", show_col_types = FALSE) 

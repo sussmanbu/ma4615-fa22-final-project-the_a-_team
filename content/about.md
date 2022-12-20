@@ -6,10 +6,7 @@ featuredImage:
 draft: false
 ---
 
-This comes from the file `content/about.md`.
-
-This is a website for the final project for MA[46]15 Data Science with R by Team the A+ team.
-The members of this team are below.
+## **About**
 
 ## Xinyi Pan
 
@@ -36,32 +33,12 @@ Chenfei is a senior from CAS. I major in econmath.
 I am a senior student major in Economics and Mathematics from College of Art and Science. 
 (https://github.com/yjchen123)
 
-<!-- Please leave in the information below -->
+## Contribution
 
-### Info About this Template.
+Data Page: Jiazhe Sun, Xinyi Pan
 
-This is based off a "hello world" example website for the [**blogdown**](https://github.com/rstudio/blogdown) package. The [Eureka](https://www.wangchucheng.com/en/docs/eureka/) theme created originally created by  [C. Wang](https://www.wangchucheng.com/zh/) and [R. Ma](https://www.ruiqima.com/zh/) and then modified by Dan Sussman who added MathJax support. Thanks to [Yihui Xie](https://github.com/yihui/) for putting `blogdown` together and for providing the Javascript to use MathJax.
+EDA Page/Modeling: Jiazhe Sun, Xinyi Pan
 
-1. three datasets links
-https://www.kaggle.com/datasets/amandaroseknudsen/edgarfoodemissions
-https://stats.oecd.org/Index.aspx?QueryId=105629#    
-https://www.eia.gov/environment/emissions/state/  (electricity.xlsx)
+Big Picture Page: Chenfei Zhao, Yingjie Chen, Qin Pu
 
-2. The main question：
-In recent years, there have been a lot of discussions on how to protect our environment, and one of the most prominent aspects that could help is to reduce the emission of greenhouse gases, CO2 in particular. We are going to look at the pattern of CO2 emissions for the past decade and dive into some of the sectors that are close to people’s everyday life -- food, transportation, and electricity. Specifically, these sectors are a rough representation of small decisions that people make every day, such as what to eat, how to travel, and how to use electrical appliances like air-conditioners. By looking at these data, we want to address the aggregation of everyone’s small decisions may have a huge impact on the environment, and hopefully could serve as an assistant for people to make better choices in the future.
-
-3. details of rows and columns for our datasets
-We investigate the relationship between greenhouse gas emissions and the three primary sources of emissions in the United States: transportation, food consumption, and electricity generation. Our group discovered three datasets: the CO2 emissions of various states in the United States in terms of electricity in recent decades, the carbon dioxide emissions of various types of air transportation airlines, and the carbon dioxide emissions of various food processing processes. Regarding the electricity dataset, there are 51 rows, including 50 states and total CO2 emissions from electricity in the United States. For columns, this is a time series dataset spanning 1970 to 2022, but we will clean it up later and only use data from the last five years. As for the air transportation dataset, rows are countries globally, but we will only look at aircraft routes in the United States. The columns are composed of the emission source, aircraft type, frequency (annual, quarterly, monthly), source (domestic aviation classified into resident airline and non-resident airline, international aviation divided into residence airline and non-residence airline), time, and CO2 emissions composition. The last dataset is the food processing stage. Rows represent the eight stages of food processing: land, farm, processing, transport, packaging, retail, consumer, and waste. Columns are GHG categories (different greenhouse gasses, but we focus on CO2 emissions), country (we focus on the United States), year, GHG emissions, and units.
-
-4. Describe why and how the data was originally collected
-
-The reason that the data was originally collected was to find answers to research problems, trends and probabilities. Our original data source are all reliable websites that allow participants to find and explore the datasets. These websites work to build better decisions for better lives. So the data was originally collected because of the need to obtain accurate and reliable information about the climate, and then the data can be used to make informed decisions or predictions about our climate. The collection of data was mostly from authoritative surveys and some external data environmental sources like Synthesis Report and report of Monthly Energy Review, and from data across organizations and reliable websites. The process of data collection may also include some calculations. For example, the data of air transport CO2 emissions are collected based on calculations of fuel burnt and quantity of CO2 emitted, which are compiled by International Civil Aviation Organization with all commercial passenger and freight flights around the world. Flights are broken down into 3 categories: total flights, passenger flights, and freight flights. For each flight, this database includes information on the departure and arrival airports, the operating airline and the type of aircraft used.
-
-5. Are you able to load/clean the data?
-
-We are going to do a few steps to clean the data. To start with, we need to check if there are missing headers, wrong data types, or confusing category labels. After revising these errors, we need to handle the missing values by checking the columns of the datasets and using the functions such as clean_names and remove_empty. If we find some missing data inside the columns, we will generate the NA values as output. Then we can get a visualization of the irregular data by plotting a boxplot and we remove the outliers by is.na() method. Also, we need to clean the redundant rows or values by function such as distinct(). In order to check the efficiency of our data-cleaning process, we can perform the same operation again to see if the unclean data is removed. Up to now, we generate technically correct data. Finally, we should make sure the data sets are consistent for statistical inference. In this case, we regard food, transportation, and electricity as the factors which influence CO2 emission. So we should make the CO2 columns consistent for three data sets as an indicator of environmental conditions throughout the research. The unit and magnitude should be uniform.
-
-6. What challenges do you foresee?
-
-Our main problem is to focus on reducing the emission of greenhouse gases, CO2 in particular. And our datasets consist of the CO2 emission of food, transportation, and electricity in the US. One obvious foresee problem is how to connect our data to the real life situation. For example, as we know, new energy vehicles are a popular trend of transportation in recent years. Since the sudden increase of oil price, people are less likely to drive a fossil fuel car and an electric car will be a better option for them. But in some datasets, the data is not very up-to-date, we have not begun to analyze the data, but it is possible that our data cannot support our hypothesis to the main question. Also, it is not an easy thing to combine all the three datasets together. Although these three datasets are used to solve the main problem, they are from a totally different perspective to view the emission problem of CO2, it is hard to connect transportation, food, and electricity together. These datasets might lead to different results and this is what we are worried about.
-
+Proofreading: Jiazhe Sun, Xinyi Pan, Chenfei Zhao, Qin Pu, Yingjie Chen

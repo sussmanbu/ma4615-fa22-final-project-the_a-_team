@@ -33,7 +33,7 @@ In this section, we want to focus on the global trend of those indicators and an
 
 * 1.1 Global Emission trend over years
 
-```{r totalline, message = FALSE}
+```{r totalline, message = FALSE, warning=FALSE}
 suppressPackageStartupMessages(library(tidyverse))
 library(dplyr)
 co2_agri <- read_csv("co2_agri_clean.csv", show_col_types = FALSE) 
@@ -165,7 +165,7 @@ plot %>%
 
 We plotted the primary energy consumption versus the total greenhouse gas emission and energy per capita versus the total greenhouse gas emission in this graph. We added trend lines to see how they correlate. It shows that a higher energy consumption corresponds to a higher emission. Energy use is the foundation of development, and every economic activity requires such input. The relationship between energy per capita and total greenhouse gas emission is slightly positive, which is a less obvious trend than total energy consumption. So we could assume that the population size has a larger influence on the total emissions, which caused the more distinct trend of the total energy consumption.
 
-```{r boxplot, message = FALSE}
+```{r boxplot, message = FALSE, warning=FALSE}
 co2_box <- co2_agri %>% 
   filter(country == "China" | country == "Brazil" | country == "India" | country == "Indonesia" | country == "United States") %>%
   ggplot(aes(country, primary_energy_consumption)) + 
@@ -183,7 +183,7 @@ co2_box
 This plot maps out the distribution of total energy used in each country between 1990-2018. The red dots represent the raw data point, and the box represents the average as well as the range of the data. The United States and China exhibit relatively higher energy use than others. It is noticeable that China and India’s energy use has been changing over the years, resulting in a longer box which means that the distribution is spread out. We thought that population increase could impact the trend, so we plotted the energy per capita to ensure the trend was still valid.
 
 
-```{r boxplot2, message = FALSE}
+```{r boxplot2, message = FALSE, warning=FALSE}
 library(ggplot2)
 library(ggthemes)
 co2_box2 <- co2_agri %>%
@@ -257,7 +257,7 @@ By exploring the data, we found that the answer to our previous question is agri
 
 ## **Section 2: The model**
 
-```{r model1}
+```{r model1, warning=FALSE}
 library(here)
 suppressPackageStartupMessages(library(tidyverse))
 library(dplyr)

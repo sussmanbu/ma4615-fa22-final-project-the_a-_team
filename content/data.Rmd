@@ -1,98 +1,85 @@
 ---
-title: Data
-description:
-toc: true
-featuredVideo:
-featuredImage: images/data-import-cheatsheet-thumbs.png
-draft: false
+title: "Data"
+description: null
+toc: yes
+featuredVideo: null
+featuredImage: images/Data science.png
+draft: no
 ---
-
-
-
-This comes from the file `content/data.Rmd`.
-
-Your first steps in this project will be to find data to work on.
-
-I recommend trying to find data that interests you and that you are knowledgeable about. A bad example would be if you have no interest in video games but your data set is about video games. I also recommend finding data that is related to current events, social justice, and other areas that have an impact.
-
-You are __not__ allowed to work on COVID data.
-
-Initially, you will study _one dataset_ but later you will need to combine that data with another dataset. For this reason, I recommend finding data that has some date and/or location components. These types of data are conducive to interesting visualizations and analysis and you can also combine this data with other data that also has a date or location variable.
-Data from the census, weather data, economic data, are all relatively easy to combine with other data with time/location components.
-
-
-## Where to keep data?
-
-
-Below 50mb: In `dataset` folder
-
-Above 50mb: In `dataset_ignore` folder. This folder will be ignored by `git` so you'll have to manually sync these files across your team.
-
-### Sharing your data
-
-
-For small datasets (<50mb), you can use the `dataset` folder that is tracked by github. Add the files just like you would any other file.
-
-**Do not** use a folder named `data`.
-This folder is reserved by `hugo`.
-If you create a folder named `data` this will cause problems.
-
-For larger datasets, you'll need to create a new folder in the project root directory named `dataset-ignore`. This will be ignored by git (based off the `.gitignore` file in the project root directory) which will help you avoid issues with Github's size limits. Your team will have to manually make sure the data files in `dataset-ignore` are synced across team members.
-
-Your [load_and_clean_data.R](/load_and_clean_data.R) file is how you will load and clean your data. Here is a an example of a very simple one.
-
-```{r}
-source(
-  here::here("static", "load_and_clean_data.R"),
-  echo = TRUE # Use echo=FALSE or omit it to avoid code output  
-)
-```
-
-Note how I use the `here::here` function from the [`here` package](https://here.r-lib.org/articles/here.html) to avoid path problems.
-This function is used to specify directories within the project's root directory.
-You should never use absolute paths (eg. `/Users/danielsussman/path/to/project/` or `C:\\MA415\\Final_Project\\`) and using `here` ensures that it doesn't matter what the current working directory is as long as you have this RStudio Project open.
-
 ----
 
+## **Data source**
+
+* Global climate change has always been a heated topic worldwide. Since the Paris Climate Agreement was signed in 2015, major countries have taken action to cut greenhouse gas emissions and to operate cleaner and greener. Among all the contributors to greenhouse gas emissions, agricultural land and energy are the most crucial sectors. So the combined dataset mainly emphasizes agriculture emissions and energy emissions. China and the United States, also many other large emitters are the top emitters of greenhouse gas emissions in the world, which is an effective representative for us to analyze how far we are in reaching the goal. Therefore, in this project, we will be looking at the greenhouse gas emission trends of those large emitters in the period 1990-2018. In particular, we will choose agriculture and energy as the focal factors in our study.
+
+## **Linkes to the original data sources ( Global total greenhouse gases emissions):**
+
+* link to the dataset: https://ourworldindata.org/co2-and-other-greenhouse-gas-emissions
+
+  * Attribution: Our World in Data
+
+**Data collection**
+
+* This first dataset comprehensively collects greenhouse gas emissions for countries worldwide. It includes the greenhouse emissions emission by different measurements, and we mainly focused on energy use and the total emission amount. We also used the GDP and population included in the dataset. This data set is extracted from the Our World in Data website, and the authors are Hanna Ritchie, Max Roser, and Pablo Rosado. It originally served as a platform to publish data and research to help solve the world’s problems and reform a better place to live. The data sources for this dataset comes from the official government department and other authoritative organization, including BP, the British multinational energy company; EIA, the U.S. Energy Information Administration; and UN, the united nation. We used this data as a primary focus for the analysis since it provides numerous variables for us to investigate and use as indicators in our model.
+
+**Data cleaning**
+
+* Link: [load_and_clean_data.R](/load_and_clean_data.R)
+
+* Because we decided to focus on the greenhouse emissions emissions from all of the world, we did not filter out any of country. Then, we used `select()` to choose variables we need to predict greenhouse emissions along all years. To make sure no NAs in the dataset, we used `na.omit()`. Finally, we saved the dataset by using `write_csv()` and `save()`.
+
+* Each profile includes interactive visualizations, explanations of the presented metrics, and the details on the sources of the data.
 
 
-## Files in static
+## **Links to the original data sources (Agriculture):**
 
-### `load_and_clean_data.R`
+*  https://www.kaggle.com/datasets/ankitpranay/global-emissions-from-agriculture-and-forest-land?resource=download 
 
-The idea behind this file is that someone coming to your website could largely replicate your analyses after running this script on the original data sets to clean them.
-This file might create a derivative data set that you then use for your subsequent analysis.
-Note that you don't need to run this script from every post/page.
-Instead, you can load in the results of this script, which could be plain text files or `.RData` files. In your data page you'll describe how these results were created. If you have a very large data set, you might save smaller data sets that you can use for exploration purposes.
-To link to this file, you can use `[cleaning script](/load_and_clean_data.R)`. 
+  * Attribution: FAOSTAT
+  
+**Data collection**
+
+* The second dataset Global emissions from agriculture and forest land are collected by the organization FAOSTAT. This organization provides free access to food and agriculture statistics for over 245 countries and covers all FAO original groupings from 1961 to the most recent year available. In this dataset, FAOSTAT collects data to investigate the main contributions of increasing global greenhouse emissions and tries to solve the crux of environmental issues in the past few decades.
+
+* The FAOSTAT domain Emissions Totals summarize the greenhouse gas (GHG) emissions disseminated in the FAOSTAT Climate Change Emissions domains, generated from agriculture and forest land. They consist of methane (CH4), nitrous oxide (N2O), and carbon dioxide (greenhouse emissions) emissions from crop and livestock activities and forest management and include land use and land-use change processes. Data are computed at Tier 1 of the IPCC Guidelines for National greenhouse gas (GHG) Inventories.
+
+**Data cleaning**
+
+* Link: [load_and_clean_data.R](/load_and_clean_data.R)
+
+*After researching the factors that cause the increasing greenhouse emissions, I found that agriculture/land use is one of the main contributors to greenhouse emissions emissions. Analyzing the data on agriculture helps to figure out the trend of greenhouse emission. So I found the dataset about agriculture.
+
+* After exploring the dataset, I first filtered out the time range in order to combine it with the global total greenhouse gas emissions dataset. We believe that we could conclude the emission trend in twenty years. So we focus on the global data from 1990 to 2018. And then, I filtered the emission element, which is greenhouse emissions emission. I chose to focus on one major source of emission to analyze the data, which is the emissions on agricultural land. I selected the columns I needed by `select()`. To make the dataset more organized and easy to read, I renamed several variables to make them coherent with another dataset. Since the original dataset is wide, I changed the format of the dataset by using `pivot_longer()`. So that the year becomes the rows and the whole table looks clear and concise. In order to calculate the total value of the emissions, I used the `group_by()` function to categorize several variables and summarized the emission value. In order to `left_join()` it with another dataset by country, I changed all the country names, so that the two datasets could combine together by country and year.
 
 
-When you are loading in data, I recommend using the `here::here` function to specify the file path. This function is used to specify a path relative to your project's root directory. Hence, you can read a file using eg, `read_csv(here::here("dataset/data_file.csv"))`.
+## **Code combined two data sets:**
+
+* The first dataset we found is about greenhouse emissions. Is your country making progress on reducing emissions? We built 207 country profiles which allow you to explore the statistics for every country in the world. Each profile includes interactive visualizations, explanations of the presented metrics, and the details on the sources of the data.
 
 
-### Shiny Interactive
+## **Variables explanation for two datasets**
 
-If you are using a shiny interactive, you'll need to keep that in a separate folder (i.e. not in `static` or `content`). For the shiny interactive you'll need to publish the app on `shinyapps.io` where the app can be run. When you publish, make sure to include any data sets you are loading in among the files you publish since those datasets will need to be loaded by your app. 
+* Our team focuses on emission situation around the globe, and we dig into small branches/subsets of the emission sources and try of discover a trend. The size of raw data is too broad to focus, so we clean the data and specifically focus on data of emission in 153 countries from1990-2018 to discover a trend. For the first dataset, we selected 8 variables as our primary interest. In the course of our research, we find agriculture a very important source of emission which contributes to 33% of global emissions according to Our World in Data. With great interests to explore more of it, we find data of agriculture as our second dataset and combine it with the first one. 
 
+* For the combined data file, considering variables in terms of columns, we have 11     variables. Then are I will provide explanations for all the 11 variables as below:
 
+  * country: A `country` means a nation. While we use `country` to focus our research to certain geographic locations, we examine emission situation of 153 countries.
+ year: We use variable `year` to focus our search on a certain time range. Our years of observation is from 1990-2018.
+ 
+  * gdp: `gdp` is a measure of size and health of economy in each country, and it tells us the gross domestic product in each country. It is calculated by multiplying gdp per capita with population. 
 
+  * population: `population` means the number of inhabitants in a certain country. It is also an important indicator that influences emissions. 
 
+  * energy_per_capita:  `energy_per_capita` represents primary energy consumption per capita, and it is calculated by total primary energy consumption/population.
 
-----
+  * energy_per_gdp: `energy_per_gdp`represents primary energy consumption per unit of gross domestic product, and it is calculated by total primary energy consumption/gross domestic product.
 
-## Rubric: On this page
+  * primary_energy_consumption: `primary_energy_consumption` measures the total energy demand of a country. It refers to direct use at the source, or supply to users without transformation of crude energy. The consumption process of primary energy will generate emissions to the atmosphere.
 
-you will
+  * Source_of_emissions: `source_of_emissions` tells us what kinds of source in agriculture generates emissions. For the agriculture sector, we focus on one `source_of_emissions`, which is Emission on agricultural land.
 
-* Describe where/how to find data.
-  * You must include a link to the original data source(s). Make sure to provide attribution to those who collected the data.
-  * Why was the data collected/curated? Who put it together? (This is important, if you don't know why it was collected then that might not be a good dataset to look at.
-* Describe the different data files used and what each variable means. 
-  * If you have many variables then only describe the most relevant ones and summarize the rest.
-* Describe any cleaning you had to do for your data.
-  * You *must* include a link to your `load_and_clean_data.R` file.
-  * Also, describe any additional R packages you used outside of those covered in class.
-  * Describe and show code for how you combined multiple data files and any cleaning that was necessary for that.
-  * Some repetition of what you do in your `load_and_clean_data.R` file is fine and encouraged if it helps explain what you did.
-* Organization, clarity, cleanliness of the page
-  * Make sure to remove excessive warnings, use clean easy-to-read code (without side scrolling), organize with sections, use bullets and other organization tools, etc.
+  * Agriculture_emissions(kilotonnes): It represents the amount of emissions produced by agriculture sector, measured in kilotonnes. `Agriculture_emissions(kilotonnes)`directly corresponds with the emission created by `Source_of_emissions`.
+
+  * total_ghg(kilotonnes): It represents total greenhouse gas emissions including land-use change and forestry, measured in kilotonnes.
+
+  * agri_ghg_total: It represents the sum of emission from `Agriculture_emissions(kilotonnes)` and `total_ghg(kilotonnes)`.
